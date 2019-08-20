@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_background">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="vertical"
+        tools:context=".SupportFragment">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/facebookSupportPage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner"
+                android:drawableTop="@drawable/ic_facebook"
+                android:fontFamily="@font/roboto_bold"
+                android:padding="24dp"
+                android:text="Facebook Support Page"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/facebookSupportGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner"
+                android:drawableTop="@drawable/ic_group"
+                android:fontFamily="@font/roboto_bold"
+                android:padding="24dp"
+                android:text="Facebook Support Group"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/officialSupportHelpline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner"
+                android:drawableTop="@drawable/ic_helpline"
+                android:fontFamily="@font/roboto_bold"
+                android:padding="24dp"
+                android:text="Donator Official Helpline"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/facebookSupportMessengerGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner"
+                android:drawableTop="@drawable/ic_messenger"
+                android:fontFamily="@font/roboto_bold"
+                android:padding="24dp"
+                android:text="Messenger Support Group"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal" />
+
+    </LinearLayout>
+</ScrollView>

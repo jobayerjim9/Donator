@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Donator</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="app_name_tittle">Donator\n24/7 Blood</string>
+    <string name="app_name_1">Donator</string>
+    <string name="app_name_2">24/7 Blood</string>
+    <string name="enter_mobile">Mobile Number</string>
+    <string name="an_emergency_blood_donate_service">An Emergency Blood Donate Service</string>
+    <string name="please_sign_in">Please Sign In</string>
+    <string name="mobile_number_e_g_8801xxxxxxxxx">Enter Mobile Number</string>
+    <string name="enter_verification_code">Enter Verification Code</string>
+    <string name="sign_in">Sign In</string>
+    <string name="submit">Submit</string>
+    <string name="new_user">New User?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="home">Home</string>
+    <string name="search_doner">Search Donor</string>
+    <string name="profile">Profile</string>
+    <string name="motivation1">“There is no great joy than saving a soul” \nRemember,\nEvery blood donor\nis a life saver\nSo, Donate blood \n &amp; save life</string>
+    <string name="motivation2"></string>
+    <string name="motivation3"> </string>
+    <string name="remember">Remember,</string>
+    <string name="know_more">View Detailed Blood Donation Info</string>
+    <string name="app_details_tittle">How To Use Donator?</string>
+    <string name="blood_group">Blood Group</string>
+    <string name="enter_your_name">Enter Your Name</string>
+    <string name="please_enter_your_details_for_nthe_very_first_time">Please Enter Your Details For\nThe Very First Time</string>
+    <string name="pick_location">Pick Your Location</string>
+    <string name="emergency">Emergency</string>
+    <string name="non_emergency">Non-Emergency</string>
+    <string name="services">Services</string>
+    <string-array name="bloodGroups">
+        <item>A+ (A Positive)</item>
+        <item>A- (A Negative)</item>
+        <item>B+ (B Positive)</item>
+        <item>B- (B Negative)</item>
+        <item>AB+ (AB Positive)</item>
+        <item>AB- (AB Negative)</item>
+        <item>O+ (O Positive)</item>
+        <item>O- (O Negative)</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="facebook_application_id" translatable="false">697002240771426</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb697002240771426</string>
+    <string name="feed">Blood Feed</string>
+
+</resources>

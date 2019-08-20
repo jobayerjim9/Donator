@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        drawable="@drawable/ic_search"
+        text="@string/search_doner" />
+    <tab
+        drawable="@drawable/ic_feed"
+        text="@string/feed" />
+    <tab
+        drawable="@drawable/ic_profile"
+        text="@string/profile" />
+
+
+</tabs>
