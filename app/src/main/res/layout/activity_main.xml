@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".Activity.MainActivity">
 
     <com.iammert.library.readablebottombar.ReadableBottomBar
         android:id="@+id/readableBottomBar"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toBottomOf="@+id/bottomTabViewPager"
         app:rbb_tabs="@xml/tabs" />
 
-    <com.teamjhj.donator_247blood.BottomTabViewPager
+    <com.teamjhj.donator_247blood.Helper.BottomTabViewPager
         android:id="@+id/bottomTabViewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"

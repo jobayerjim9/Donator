@@ -1,8 +1,5 @@
 package com.teamjhj.donator_247blood.DataModel;
 
-import com.teamjhj.donator_247blood.CommentsData;
-
-import java.util.ArrayList;
 import java.util.Date;
 
 public class NotificationData {
@@ -11,7 +8,6 @@ public class NotificationData {
     private boolean clicked = false;
     private Date date;
     private int day, month, year;
-
 
     public NotificationData() {
     }

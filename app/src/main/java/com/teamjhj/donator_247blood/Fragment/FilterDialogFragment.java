@@ -15,8 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import com.teamjhj.donator_247blood.AppData;
-import com.teamjhj.donator_247blood.BloodFeedFragment;
+import com.teamjhj.donator_247blood.DataModel.AppData;
 import com.teamjhj.donator_247blood.R;
 
 import java.util.Objects;

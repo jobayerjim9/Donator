@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.teamjhj.donator_247blood.Activity.ChatActivity;
 import com.teamjhj.donator_247blood.DataModel.ChatData;
 import com.teamjhj.donator_247blood.R;
@@ -41,13 +44,22 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         holder.messenger_people.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DatabaseReference setViewed = FirebaseDatabase.getInstance().getReference("MessengerChat").child(FirebaseAuth.getInstance().getUid()).child(chatData.get(position).getUid()).child(chatData.get(position).getMessegingKey());
+                setViewed.child("viewed").setValue(true);
+                holder.messenger_people.setCardBackgroundColor(ctx.getResources().getColor(R.color.browser_actions_bg_grey));
+                holder.nameMessenger.setTextColor(ctx.getResources().getColor(R.color.black));
+                holder.messageMessenger.setTextColor(ctx.getResources().getColor(R.color.black));
                 Intent i = new Intent(ctx, ChatActivity.class);
                 i.putExtra("Name", chatData.get(position).getRecieverName());
                 i.putExtra("uid", chatData.get(position).getUid());
                 ctx.startActivity(i);
             }
         });
-
+        if (!chatData.get(position).isViewed()) {
+            holder.messenger_people.setCardBackgroundColor(ctx.getResources().getColor(R.color.material_background));
+            holder.nameMessenger.setTextColor(ctx.getResources().getColor(R.color.white));
+            holder.messageMessenger.setTextColor(ctx.getResources().getColor(R.color.white));
+        }
     }
 
     @Override

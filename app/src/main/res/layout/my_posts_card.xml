@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
     android:orientation="vertical"
     app:cardCornerRadius="16dp"
     app:cardElevation="8dp"
@@ -13,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,19 +27,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/reasonMyPost"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="Pregnancy"
-                    android:textColor="@color/black"
-                    android:textSize="12sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -66,6 +55,19 @@
                         android:text=" 2"
                         android:textColor="@color/black" />
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/reasonMyPost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Pregnancy"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -99,13 +101,11 @@
             </LinearLayout>
 
         </LinearLayout>
-
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:background="@color/quantum_bluegrey100" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -132,5 +132,6 @@
                 app:srcCompat="@drawable/ic_remove" />
 
         </LinearLayout>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

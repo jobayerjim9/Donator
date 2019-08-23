@@ -4,10 +4,12 @@
     android:id="@+id/messenger_people"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/black">
+    app:cardBackgroundColor="@color/browser_actions_bg_grey"
+    app:cardElevation="0dp"
+    app:cardMaxElevation="0dp"
+    app:contentPadding="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +21,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/avatar_profile" />
+            app:srcCompat="@drawable/profile_avatar" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/teko_semibold"
                 android:text="Jobayer Hossain Jim"
-                android:textColor="@color/white"
+                android:textColor="@android:color/black"
                 android:textSize="24sp" />
 
             <TextView
@@ -43,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:maxLength="50"
                 android:text="A Simple Text Message About Donate"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
         </LinearLayout>
 
     </LinearLayout>

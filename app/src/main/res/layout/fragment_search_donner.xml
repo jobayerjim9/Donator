@@ -75,7 +75,7 @@
 
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
-                tools:context=".SearchDonnerFragment">
+                tools:context=".Fragment.SearchDonnerFragment">
 
                 <Button
                     android:id="@+id/searchDonner"

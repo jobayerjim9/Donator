@@ -29,6 +29,13 @@
     <string name="emergency">Emergency</string>
     <string name="non_emergency">Non-Emergency</string>
     <string name="services">Services</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="facebook_application_id" translatable="false">697002240771426</string>
+
+    <string name="facebook_login_protocol_scheme" translatable="false">fb697002240771426</string>
+    <string name="feed">Blood Feed</string>
     <string-array name="bloodGroups">
         <item>A+ (A Positive)</item>
         <item>A- (A Negative)</item>
@@ -39,12 +46,5 @@
         <item>O+ (O Positive)</item>
         <item>O- (O Negative)</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
-    <string name="facebook_application_id" translatable="false">697002240771426</string>
-    <string name="facebook_login_protocol_scheme" translatable="false">fb697002240771426</string>
-    <string name="feed">Blood Feed</string>
 
 </resources>

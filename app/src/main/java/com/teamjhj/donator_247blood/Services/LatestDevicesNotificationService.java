@@ -53,7 +53,7 @@ public class LatestDevicesNotificationService extends ContextWrapper {
                 .setContentText(body)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setSound(sound)
-                .setAutoCancel(false)
+                .setAutoCancel(true)
                 .setStyle(new Notification.BigTextStyle());
     }
 }

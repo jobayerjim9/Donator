@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
 
-            tools:context=".EditProfileFragment">
+            tools:context=".Fragment.EditProfileFragment">
 
             <RadioGroup
                 android:id="@+id/privacyNumberGroup"
@@ -61,7 +61,7 @@
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/privacyNumberGroup"
-                app:layout_constraintTop_toBottomOf="@+id/lastDonationEditProfile" />
+                app:layout_constraintTop_toBottomOf="@+id/spinnerEditProfile" />
 
             <CheckBox
                 android:id="@+id/availableCheckBox"
@@ -135,29 +135,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView32" />
-
-            <Button
-                android:id="@+id/lastDonationEditProfile"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/rounded_corner"
-                android:drawableLeft="@drawable/ic_date"
-                android:fontFamily="@font/roboto_bold"
-                android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingTop="16dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="16dp"
-                android:text="Set Last Donation Date"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinnerEditProfile" />
 
             <com.manojbhadane.QButton
                 android:id="@+id/saveButtonEditProfile"

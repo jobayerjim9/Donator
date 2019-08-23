@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.teamjhj.donator_247blood.Activity.MainActivity;
 import com.teamjhj.donator_247blood.R;
 
 import java.util.Random;
@@ -49,7 +50,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
-        Intent intent = new Intent(this, EmptyActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("mobile", tag);
         intent.putExtras(bundle);
@@ -73,7 +74,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     .setSmallIcon(R.drawable.ic_notification)
                     .setContentTitle(tittle)
                     .setContentText(body)
-                    .setAutoCancel(false)
+                    .setAutoCancel(true)
                     .setSound(defaultSound)
                     .setContentIntent(pendingIntent)
                     .setStyle(new NotificationCompat.BigTextStyle());

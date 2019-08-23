@@ -2,10 +2,7 @@ package com.teamjhj.donator_247blood.Adapter;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +22,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.teamjhj.donator_247blood.CommentBottomSheetFragment;
+import com.teamjhj.donator_247blood.DataModel.NonEmergencyInfo;
 import com.teamjhj.donator_247blood.DataModel.NotificationData;
-import com.teamjhj.donator_247blood.NonEmergencyInfo;
+import com.teamjhj.donator_247blood.Fragment.BloodRequestDialog;
+import com.teamjhj.donator_247blood.Fragment.CommentBottomSheetFragment;
 import com.teamjhj.donator_247blood.R;
 
 import java.util.ArrayList;
@@ -59,27 +57,22 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.notificationCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (notificationData.get(position).getTag().contains("+88")) {
-                    String mobile = notificationData.get(position).getTag();
-                    Uri u = Uri.parse("tel:" + mobile);
-                    // Create the intent and set the data for the
-                    // intent as the phone number.
-                    Intent i = new Intent(Intent.ACTION_DIAL, u);
+                if (notificationData.get(position).getTag().contentEquals(FirebaseAuth.getInstance().getUid())) {
+                    String tag = notificationData.get(position).getTag();
 
-                    try {
                         DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid()).child(notificationData.get(position).getKey());
                         notification.child("clicked").setValue(true);
                         notificationData.get(position).setClicked(true);
+                    FragmentManager manager = ((AppCompatActivity) ctx).getSupportFragmentManager();
+                    BloodRequestDialog bloodRequestDialog = new BloodRequestDialog(tag);
+                    bloodRequestDialog.setCancelable(false);
+                    bloodRequestDialog.show(manager, tag);
                         //notifyDataSetChanged();
-                        ctx.startActivity(i);
 
                         //holder.notificationCard.setCardBackgroundColor(Color.WHITE);
 
-                    } catch (SecurityException s) {
-                        Toast.makeText(ctx, s.getLocalizedMessage(), Toast.LENGTH_LONG)
-                                .show();
-                    }
-                } else {
+
+                } else if (notificationData.get(position).getTag().contains("Comments")) {
                     dialog = new ProgressDialog(ctx);
                     dialog.setCancelable(true);
                     dialog.setMessage("Loading Comments!");

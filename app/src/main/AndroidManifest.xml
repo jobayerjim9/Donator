@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.teamjhj.donator_247blood">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -24,22 +23,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Activity.ChatActivity"></activity>
-        <activity android:name=".MessengerActivity" />
+        <activity android:name=".Activity.MessengerActivity" />
         <activity android:name=".Activity.NotificationActivity" />
         <activity
             android:name=".Services.EmptyActivity"
             android:launchMode="singleTop" />
         <activity android:name=".Activity.AboutUsActivity" />
         <activity
-            android:name=".EditPostActivity"
+            android:name=".Activity.EditPostActivity"
             android:theme="@style/AppThemeSignIn" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".Activity.SignUpActivity"
             android:theme="@style/AppThemeSignIn" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activity.MainActivity"
             android:theme="@style/AppThemeSignIn" />
-        <activity android:name=".SignInActivity" />
+        <activity android:name=".Activity.SignInActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -48,7 +47,7 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
-        <activity android:name=".LoadingScreenActivity">
+        <activity android:name=".Activity.LoadingScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

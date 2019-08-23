@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
 
         android:scrollbars="vertical"
-        tools:context=".SignInActivity">
+        tools:context=".Activity.SignInActivity">
 
         <Button
             android:id="@+id/submitButton"
