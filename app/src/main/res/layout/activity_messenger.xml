@@ -7,6 +7,20 @@
     android:background="@color/browser_actions_bg_grey"
     tools:context=".Activity.MessengerActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/messengerToolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/material_background"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Messenger"
+        app:titleTextColor="@color/white" />
+
+
     <TextView
         android:id="@+id/no_message_Label"
         android:layout_width="wrap_content"
@@ -25,18 +39,48 @@
         app:layout_constraintTop_toBottomOf="@+id/no_messege"
         app:layout_constraintVertical_bias="0.0" />
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/messengerToolbar"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/messengerShimmer"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="Messenger"
-        app:titleTextColor="@color/white" />
+        app:layout_constraintTop_toBottomOf="@+id/messengerToolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="526dp"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/messenger_people_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <include
+                layout="@layout/messenger_people_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <include
+                layout="@layout/messenger_people_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <include
+                layout="@layout/messenger_people_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messengerRecycler"
         android:layout_width="0dp"

@@ -33,7 +33,7 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="12dp"
                     android:fontFamily="@font/teko_semibold"
-                    android:text="Jobayer Hossain Jim"
+                    android:maxLines="1"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
@@ -43,7 +43,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="12dp"
-                    android:text="Message"
                     android:textColor="@color/black" />
             </LinearLayout>
 

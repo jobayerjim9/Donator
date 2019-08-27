@@ -16,12 +16,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.teamjhj.donator_247blood.DataModel.DonationHistory;
 import com.teamjhj.donator_247blood.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
@@ -58,14 +63,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(ctx, "Deleted Successfully! Swipe Down To Refresh!", Toast.LENGTH_LONG).show();
+                                            updateLastDonation();
                                         }
                                     }
                                 });
                             }
                         })
 
-                        .setNegativeButton("No", null)
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                updateLastDonation();
+                            }
+                        })
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
                 return false;
@@ -75,10 +85,61 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+    @Override
     public int getItemCount() {
         return donationHistories.size();
     }
 
+    private void updateLastDonation() {
+        ArrayList<DonationHistory> donationHistories = new ArrayList<>();
+        DatabaseReference profile = FirebaseDatabase.getInstance().getReference("UserProfile").child(FirebaseAuth.getInstance().getUid());
+        profile.child("DonationHistory").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    DonationHistory donationHistory = dataSnapshot1.getValue(DonationHistory.class);
+                    if (donationHistory != null) {
+                        donationHistories.add(donationHistory);
+                    }
+                }
+                Collections.sort(donationHistories, new Comparator<DonationHistory>() {
+                    @Override
+                    public int compare(DonationHistory donationHistory, DonationHistory t1) {
+                        //return Integer
+                        return Integer.compare(donationHistory.getMonth(), t1.getMonth());
+                    }
+                });
+                Collections.sort(donationHistories, new Comparator<DonationHistory>() {
+                    @Override
+                    public int compare(DonationHistory donationHistory, DonationHistory t1) {
+                        return Integer.compare(donationHistory.getYear(), t1.getYear());
+                    }
+                });
+                int day = donationHistories.get(donationHistories.size() - 1).getDay();
+                int month = donationHistories.get(donationHistories.size() - 1).getMonth();
+                int year = donationHistories.get(donationHistories.size() - 1).getYear();
+                profile.child("lastDonationDate").setValue(day);
+                profile.child("lastDonationMonth").setValue(month);
+                profile.child("lastDonationYear").setValue(year).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(ctx, "Deleted Successfully!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     class HistoryViewHolder extends RecyclerView.ViewHolder {
         TextView hospitalClinic, dateHistory;
         CardView historyCard;

@@ -39,6 +39,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -113,7 +114,7 @@ public class SearchDonnerFragment extends Fragment {
     private PlacesClient placesClient;
     private List<Place.Field> fields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ADDRESS);
     private ProgressDialog progressDialog;
-
+    private LottieAnimationView blood_transfusion;
     public SearchDonnerFragment() {
         // Required empty public constructor
     }
@@ -191,6 +192,7 @@ public class SearchDonnerFragment extends Fragment {
         searchDonorLabel = view.findViewById(R.id.searchDonorLabel);
         searchDonnerScrollView = view.findViewById(R.id.searchDonnerScrollView);
         logoImage = view.findViewById(R.id.logoImage);
+        blood_transfusion = view.findViewById(R.id.blood_transfusion);
         searchCardView = view.findViewById(R.id.searchCardView);
         searchDonorMessage = view.findViewById(R.id.searchDonorMessage);
         searchDonnerFrameLayout = view.findViewById(R.id.searchDonnerFrameLayout);
@@ -262,25 +264,28 @@ public class SearchDonnerFragment extends Fragment {
                 searchDonnerScrollView.setVisibility(View.VISIBLE);
                 searchDonorLabel.setVisibility(View.VISIBLE);
                 searchDonorMessage.setVisibility(View.GONE);
-                DatabaseReference checkReq = FirebaseDatabase.getInstance().getReference("LiveRequest").child(FirebaseAuth.getInstance().getUid());
-                checkReq.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            WarningDialog warningDialog = new WarningDialog();
-                            warningDialog.setCancelable(false);
-                            warningDialog.show(getChildFragmentManager(), "Warning!");
-                        }
-                    }
+                blood_transfusion.setVisibility(View.GONE);
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
                 if (i == R.id.nonEmmargencyButton) {
+
                     searchDonner.setText("Post");
                 } else if (i == R.id.emmargencyButton) {
+                    DatabaseReference checkReq = FirebaseDatabase.getInstance().getReference("LiveRequest").child(FirebaseAuth.getInstance().getUid());
+                    checkReq.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                WarningDialog warningDialog = new WarningDialog();
+                                warningDialog.setCancelable(false);
+                                warningDialog.show(getChildFragmentManager(), "Warning!");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     searchDonner.setText("Search Donor");
                 }
             }

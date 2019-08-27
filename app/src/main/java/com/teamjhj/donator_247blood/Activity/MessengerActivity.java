@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,10 +24,8 @@ import com.teamjhj.donator_247blood.DataModel.ChatData;
 import com.teamjhj.donator_247blood.R;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 
 public class MessengerActivity extends AppCompatActivity {
     ArrayList<ChatData> chatData = new ArrayList<>();
@@ -34,11 +33,14 @@ public class MessengerActivity extends AppCompatActivity {
     ChatListAdapter chatListAdapter;
     LottieAnimationView lottieAnimationView;
     TextView no_message_Label;
+    private ShimmerFrameLayout messengerShimmer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messenger);
         Toolbar toolbar = findViewById(R.id.messengerToolbar);
+        messengerShimmer = findViewById(R.id.messengerShimmer);
+        messengerShimmer.startShimmer();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -74,52 +76,34 @@ public class MessengerActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     if (data != null) {
-                        try {
-                            Date d1 = Calendar.getInstance().getTime();
-                            Date d2 = data.getMessageTime();
-                            Log.d("Current Time", d1.getTime() + "");
-                            long diff = d1.getTime() - d2.getTime();
 
-                            long diffSeconds = diff / 1000 % 60;
-                            long diffMinutes = diff / (60 * 1000) % 60;
-                            long diffHours = diff / (60 * 60 * 1000) % 24;
-                            long diffDays = diff / (24 * 60 * 60 * 1000);
-                            Log.d("Time", diffMinutes + " " + diffHours);
-                            if (diffMinutes == 0) {
-                                data.setDiffSec(diffSeconds);
-                            } else if (diffMinutes > 0 && diffHours == 0) {
-                                data.setDiffSec(diffMinutes);
-
-                            } else if (diffHours > 0 && diffDays == 0) {
-                                data.setDiffSec(diffHours);
-                            } else if (diffDays > 0) {
-                                data.setDiffSec(diffDays);
-                            }
-                            Log.d("DiffMin", diffMinutes + " Mess " + data.getMessage());
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
                         chatData.add(data);
 
                         //chatListAdapter.notifyDataSetChanged();
                     }
 
                 }
+
                 Collections.sort(chatData, new Comparator<ChatData>() {
                     @Override
                     public int compare(ChatData chatData, ChatData t1) {
-                        return Long.compare(chatData.getDiffSec(), t1.getDiffSec());
+                        return chatData.getMessageTime().compareTo(t1.getMessageTime());
+                        //return Long.compare(chatData.getDiffSec(), t1.getDiffSec());
                     }
                 });
-                //Collections.reverse(chatData);
+                Collections.reverse(chatData);
                 if (chatData.isEmpty()) {
+                    messengerShimmer.setVisibility(View.GONE);
+                    messengerShimmer.stopShimmer();
                     no_message_Label.setVisibility(View.VISIBLE);
                     lottieAnimationView.setVisibility(View.VISIBLE);
                 } else {
+                    messengerShimmer.setVisibility(View.GONE);
+                    messengerShimmer.stopShimmer();
                     no_message_Label.setVisibility(View.GONE);
                     lottieAnimationView.setVisibility(View.GONE);
                 }
+
                 chatListAdapter.notifyDataSetChanged();
 
 

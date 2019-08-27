@@ -71,6 +71,10 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public class CommentsViewHolder extends RecyclerView.ViewHolder {
         private TextView comments_name, comments_message, comments_time;
 

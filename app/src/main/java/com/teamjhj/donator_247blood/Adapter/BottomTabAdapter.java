@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.teamjhj.donator_247blood.Fragment.BloodFeedFragment;
-import com.teamjhj.donator_247blood.Fragment.ProfileFragment;
+import com.teamjhj.donator_247blood.Fragment.MenuFragment;
 import com.teamjhj.donator_247blood.Fragment.SearchDonnerFragment;
 
 public class BottomTabAdapter extends FragmentPagerAdapter {
@@ -23,7 +23,7 @@ public class BottomTabAdapter extends FragmentPagerAdapter {
         } else if (i == 1) {
             return new BloodFeedFragment();
         } else if (i == 2) {
-            return new ProfileFragment();
+            return new MenuFragment();
         } else {
             return null;
         }

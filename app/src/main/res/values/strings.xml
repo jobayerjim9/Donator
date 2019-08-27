@@ -11,6 +11,7 @@
     <string name="enter_verification_code">Enter Verification Code</string>
     <string name="sign_in">Sign In</string>
     <string name="submit">Submit</string>
+    <string name="menu">Menu</string>
     <string name="new_user">New User?</string>
     <string name="sign_up">Sign Up</string>
     <string name="home">Home</string>

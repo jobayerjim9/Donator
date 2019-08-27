@@ -1,12 +1,20 @@
 package com.teamjhj.donator_247blood.Adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,19 +33,32 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.teamjhj.donator_247blood.Activity.ChatActivity;
+import com.teamjhj.donator_247blood.DataModel.AppData;
 import com.teamjhj.donator_247blood.DataModel.NonEmergencyInfo;
-import com.teamjhj.donator_247blood.Fragment.BloodFeedFragment;
+import com.teamjhj.donator_247blood.DataModel.NotificationData;
+import com.teamjhj.donator_247blood.DataModel.NotificationSender;
 import com.teamjhj.donator_247blood.Fragment.CommentBottomSheetFragment;
 import com.teamjhj.donator_247blood.R;
+import com.teamjhj.donator_247blood.RestApi.ApiClient;
+import com.teamjhj.donator_247blood.RestApi.ApiInterface;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
+
+import in.shadowfax.proswipebutton.ProSwipeButton;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestViewHolder> {
     private DatabaseReference postReference;
     private Context ctx;
     private ArrayList<NonEmergencyInfo> nonEmergencyInfos;
-
+    int distanceFromUser = -1;
     public RequestAdapter(Context ctx, ArrayList<NonEmergencyInfo> nonEmergencyInfos) {
         this.ctx = ctx;
         this.nonEmergencyInfos = nonEmergencyInfos;
@@ -47,6 +68,36 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     @Override
     public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new RequestViewHolder(LayoutInflater.from(ctx).inflate(R.layout.blood_feed_card, parent, false));
+    }
+
+    private static double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        return (dist);
+    }
+
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private static double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
+
+    @Override
+    public int getItemCount() {
+        try {
+            return nonEmergencyInfos.size();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override
@@ -68,11 +119,104 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
 
             }
         });
+        DatabaseReference nonEmergencyLive = FirebaseDatabase.getInstance().getReference("NonEmergencyRequests").child(nonEmergencyInfos.get(position).getYear() + "").child(nonEmergencyInfos.get(position).getMonth() + "").child(nonEmergencyInfos.get(position).getDate() + "").child(nonEmergencyInfos.get(position).getKey()).child("AcceptedRequest").child(FirebaseAuth.getInstance().getUid());
+        nonEmergencyLive.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    holder.accept_btn_blood_feed.setVisibility(View.GONE);
+                    holder.acceptedText.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        holder.accept_btn_blood_feed.setSwipeDistance((float) 0.3);
+        holder.accept_btn_blood_feed.setOnSwipeListener(new ProSwipeButton.OnSwipeListener() {
+
+
+            @Override
+            public void onSwipeConfirm() {
+                // user has swiped the btn. Perform your async operation now
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // task success! show TICK icon in ProSwipeButton
+
+                        new AlertDialog.Builder(ctx)
+                                .setTitle("Opt In?")
+                                .setMessage("Are you sure you want to Opt In?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        nonEmergencyLive.child("accepted").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                nonEmergencyLive.child("radius").setValue(distanceFromUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            sendNotification();
+                                                            holder.accept_btn_blood_feed.setVisibility(View.GONE);
+                                                            holder.acceptedText.setVisibility(View.VISIBLE);
+                                                            holder.acceptedText.setText("Opt In Successful");
+                                                            holder.accept_btn_blood_feed.showResultIcon(true);
+
+                                                        } else {
+                                                            Toast.makeText(ctx, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                                            holder.accept_btn_blood_feed.showResultIcon(false);
+                                                        }
+                                                    }
+                                                });
+
+                                            }
+                                        });
+                                    }
+                                })
+                                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialogInterface) {
+                                        holder.accept_btn_blood_feed.showResultIcon(false);
+                                    }
+                                })
+                                .setNegativeButton("No", null)
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+
+                        // false if task failed
+
+
+                    }
+                }, 1000);
+            }
+        });
+        try {
+            //  int distanceFromUser=Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(ctx).getString("longitude", "defaultStringIfNothingFound"));
+            SharedPreferences pref = PreferenceManager
+                    .getDefaultSharedPreferences(ctx);
+            double longitude = Double.parseDouble(pref.getString("longitude", null));
+            double latitude = Double.parseDouble(pref.getString("latitude", null));
+            Log.e("SharedPref", longitude + "");
+            distanceFromUser = (int) distance(latitude, longitude, nonEmergencyInfos.get(position).getLat(), nonEmergencyInfos.get(position).getLongt());
+
+            holder.bloodFeedDistanceBar.setProgress(distanceFromUser);
+            String placeHolder = "Within " + distanceFromUser + " K.m";
+            holder.bloodFeedDistanceText.setText(placeHolder);
+            holder.bloodFeedDistanceBar.getProgressDrawable().setColorFilter(
+                    Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+        } catch (Exception e) {
+            holder.bloodFeedDistanceBar.setVisibility(View.GONE);
+            holder.bloodFeedDistanceText.setVisibility(View.GONE);
+            e.printStackTrace();
+        }
         holder.likeButton.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
                 likeThePost(position);
-                notifyDataSetChanged();
+                //notifyDataSetChanged();
             }
 
             @Override
@@ -93,7 +237,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         holder.nameBloodFeed.setText(placeHolder);
         placeHolder = nonEmergencyInfos.get(position).getReason();
         holder.reasonBloodFeed.setText(placeHolder);
-        placeHolder = " " + nonEmergencyInfos.get(position).getDate() + "-" + nonEmergencyInfos.get(position).getMonth() + "-" + nonEmergencyInfos.get(position).getYear();
+        placeHolder = nonEmergencyInfos.get(position).getDate() + "-" + nonEmergencyInfos.get(position).getMonth() + "-" + nonEmergencyInfos.get(position).getYear();
         holder.dateBloodFeed.setText(placeHolder);
         holder.callBloodFeed.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +303,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         holder.bloodGroupLarge.setText(blood1);
         holder.bloodGroupSmall.setText(blood2);
         try {
-            placeHolder = " " + nonEmergencyInfos.get(position).getBags();
+            placeHolder = nonEmergencyInfos.get(position).getBags();
 
             holder.bagBloodFeed.setText(placeHolder);
         } catch (Exception e) {
@@ -239,6 +383,17 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
 //                popupMenu.show();
 //            }
 //        });
+        holder.messengerBloodFeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //DatabaseReference setViewed = FirebaseDatabase.getInstance().getReference("MessengerChat").child(FirebaseAuth.getInstance().getUid()).child(chatData.get(position).getUid()).child(chatData.get(position).getMessegingKey());
+                //setViewed.child("viewed").setValue(true);
+                Intent i = new Intent(ctx, ChatActivity.class);
+                i.putExtra("Name", nonEmergencyInfos.get(position).getName());
+                i.putExtra("uid", nonEmergencyInfos.get(position).getUid());
+                ctx.startActivity(i);
+            }
+        });
     }
 
     private void unlikeThePost(int position) {
@@ -247,7 +402,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    BloodFeedFragment.getDataFromDatabase();
+                    // BloodFeedFragment.getDataFromDatabase();
                     Toast.makeText(ctx, "This Post Removed From Your Profile Successfully", Toast.LENGTH_LONG).show();
                 }
             }
@@ -260,7 +415,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    BloodFeedFragment.getDataFromDatabase();
+                    //BloodFeedFragment.getDataFromDatabase();
                     Toast.makeText(ctx, "This Post Saved To Your Profile Successfully", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(ctx, "Check Your Internet Connection", Toast.LENGTH_LONG).show();
@@ -271,19 +426,51 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    private void sendNotification() {
         try {
-            return nonEmergencyInfos.size();
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            String tempToken = AppData.getUserProfile().getToken();
+            Log.e("MyToken", tempToken);
+            String notificationMessage = AppData.getUserProfile().getName() + " Opt In On Your Blood Feed Post!";
+            NotificationData notificationData = new NotificationData(notificationMessage, "Request Accepted!", "BloodFeedReq");
+            Date date = Calendar.getInstance().getTime();
+            notificationData.setDate(date);
+            //NotificationSender notificationSender = new NotificationSender(postOwner.getToken(), notificationData);
+            NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
+            DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid());
+
+            notification.push().setValue(notificationData);
+            Call<ResponseBody> bodyCall = apiInterface.sendNotification(notificationSender);
+
+            bodyCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    Log.e("Response Code", response.code() + "");
+                    Log.e("Error MEssage", response.message());
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+
+
         } catch (Exception e) {
-            return 0;
+            e.printStackTrace();
         }
     }
 
     class RequestViewHolder extends RecyclerView.ViewHolder {
-        TextView nameBloodFeed, reasonBloodFeed, dateBloodFeed, bagBloodFeed, bloodGroupLarge, bloodGroupSmall;
+        TextView nameBloodFeed, reasonBloodFeed, dateBloodFeed, bagBloodFeed, bloodGroupLarge, bloodGroupSmall, bloodFeedDistanceText, acceptedText;
         LikeButton likeButton;
-        ImageView commentBloodFeed, callBloodFeed, mapBloodFeed;
-
+        ImageView commentBloodFeed, callBloodFeed, mapBloodFeed, messengerBloodFeed;
+        ProgressBar bloodFeedDistanceBar;
+        ProSwipeButton accept_btn_blood_feed;
         RequestViewHolder(@NonNull View itemView) {
             super(itemView);
             likeButton = itemView.findViewById(R.id.likeButton);
@@ -296,6 +483,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             mapBloodFeed = itemView.findViewById(R.id.mapBloodFeed);
             bloodGroupLarge = itemView.findViewById(R.id.bloodGroupLarge);
             bloodGroupSmall = itemView.findViewById(R.id.bloodGroupSmall);
+            bloodFeedDistanceBar = itemView.findViewById(R.id.bloodFeedDistanceBar);
+            bloodFeedDistanceText = itemView.findViewById(R.id.bloodFeedDistanceText);
+            messengerBloodFeed = itemView.findViewById(R.id.messengerBloodFeed);
+            accept_btn_blood_feed = itemView.findViewById(R.id.accept_btn_blood_feed);
+            acceptedText = itemView.findViewById(R.id.acceptedText);
 
         }
     }

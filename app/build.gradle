@@ -68,6 +68,5 @@ dependencies {
     implementation 'com.github.luksoral:ExpandedMenuView:1.0.1'
     implementation 'com.ramijemli.percentagechartview:percentagechartview:0.3.1'
     implementation "androidx.work:work-runtime:2.2.0"
-
     implementation 'in.shadowfax:proswipebutton:1.2.2'
 }

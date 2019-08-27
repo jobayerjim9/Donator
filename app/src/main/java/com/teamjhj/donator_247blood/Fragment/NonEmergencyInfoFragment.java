@@ -134,6 +134,7 @@ public class NonEmergencyInfoFragment extends DialogFragment implements DatePick
             ReviewNonEmergencyRequestInfo review = new ReviewNonEmergencyRequestInfo();
             review.setCancelable(false);
             review.show(getChildFragmentManager(), "Review");
+            //dismiss();
 
 
         }

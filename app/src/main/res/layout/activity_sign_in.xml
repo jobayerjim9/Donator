@@ -128,6 +128,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:background="@android:color/white"
             android:fontFamily="@font/roboto_bold"
             android:text="@string/sign_in"
             android:textColor="@color/colorPrimary"

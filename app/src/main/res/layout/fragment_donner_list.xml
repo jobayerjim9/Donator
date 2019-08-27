@@ -15,6 +15,23 @@
         <!-- TODO: Update blank fragment layout -->
 
 
+        <Button
+            android:id="@+id/viewRequestButton"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@color/material_background"
+            android:fontFamily="sans-serif-black"
+            android:text="View Request!"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/donnerListRecycler" />
+
         <TextView
             android:id="@+id/noDonor"
             android:layout_width="wrap_content"
@@ -24,7 +41,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:fontFamily="@font/roboto_bold"
-            android:text="No Donor Found Within 100 km"
+            android:text="No Donor Found Within 25 km"
             android:textAlignment="center"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
@@ -108,10 +125,11 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="69dp"
             app:bg_color="@color/material_background"
-            app:btn_text="Swipe To Notify Donors!"
+            app:btn_text="Swipe To Place Request!"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.cardview.widget.CardView>

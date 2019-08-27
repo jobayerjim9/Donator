@@ -1,6 +1,10 @@
 package com.teamjhj.donator_247blood.Fragment;
 
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +32,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.teamjhj.donator_247blood.Activity.MyRequestActivity;
 import com.teamjhj.donator_247blood.Adapter.DonnerListAdapter;
+import com.teamjhj.donator_247blood.DataModel.AcceptingData;
 import com.teamjhj.donator_247blood.DataModel.AppData;
 import com.teamjhj.donator_247blood.DataModel.LiveBloodRequest;
 import com.teamjhj.donator_247blood.DataModel.NotificationData;
@@ -70,7 +77,9 @@ public class DonnerListFragment extends Fragment {
     LatLng location;
     int dayCount = 0;
     ArrayList<Integer> radiusData;
-
+    Button viewRequestButton;
+    ProSwipeButton proSwipeBtn;
+    ImageView closeButtonDonnerList;
     public DonnerListFragment(String reason, String bloodGroup, LatLng location) {
         this.reason = reason;
         this.bloodGroup = bloodGroup;
@@ -87,7 +96,24 @@ public class DonnerListFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_donner_list, container, false);
         DatabaseReference liveRequest = FirebaseDatabase.getInstance().getReference("LiveRequest").child(FirebaseAuth.getInstance().getUid());
-        ProSwipeButton proSwipeBtn = v.findViewById(R.id.awesome_btn);
+        DatabaseReference requestHistory = FirebaseDatabase.getInstance().getReference("RequestHistory").child("Emergency").child(FirebaseAuth.getInstance().getUid());
+        proSwipeBtn = v.findViewById(R.id.awesome_btn);
+        viewRequestButton = v.findViewById(R.id.viewRequestButton);
+        closeButtonDonnerList = v.findViewById(R.id.closeButtonDonnerList);
+        closeButtonDonnerList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                animation_view2.cancelAnimation();
+                SearchDonnerFragment.donnerListClose(1);
+
+            }
+        });
+        viewRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), MyRequestActivity.class));
+            }
+        });
         proSwipeBtn.setOnSwipeListener(new ProSwipeButton.OnSwipeListener() {
             @Override
             public void onSwipeConfirm() {
@@ -100,15 +126,66 @@ public class DonnerListFragment extends Fragment {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
+                                    closeButtonDonnerList.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            new AlertDialog.Builder(getContext())
+                                                    .setTitle("Cancel Request")
+                                                    .setMessage("Are you sure you want to cancel this Request?")
+
+                                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            moveToArchive();
+                                                        }
+                                                    })
+
+                                                    .setNegativeButton("Keep Pending", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                            animation_view2.cancelAnimation();
+                                                            SearchDonnerFragment.donnerListClose(1);
+                                                        }
+                                                    })
+                                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                                    .show();
+                                        }
+                                    });
                                     proSwipeBtn.showResultIcon(false);
+                                    proSwipeBtn.setVisibility(View.INVISIBLE);
+                                    viewRequestButton.setVisibility(View.VISIBLE);
+                                    viewRequestButton.setText("View Pending Request!");
                                     Toast.makeText(getContext(), "You Already Have A Pending Request! Close It For Request Again!", Toast.LENGTH_LONG).show();
                                 } else {
+                                    closeButtonDonnerList.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            new AlertDialog.Builder(getContext())
+                                                    .setTitle("Cancel Request")
+                                                    .setMessage("Are you sure you want to cancel this Request?")
+
+                                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            moveToArchive();
+                                                        }
+                                                    })
+
+                                                    .setNegativeButton("Keep Pending", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                            animation_view2.cancelAnimation();
+                                                            SearchDonnerFragment.donnerListClose(1);
+                                                        }
+                                                    })
+                                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                                    .show();
+                                        }
+                                    });
                                     for (int i = 0; i < donnersData.size(); i++) {
                                         sendNotification(donnersData.get(i));
 
                                     }
                                     Date date = Calendar.getInstance().getTime();
-                                    LiveBloodRequest liveBloodRequest = new LiveBloodRequest(date, location.latitude, location.longitude, reason);
+                                    LiveBloodRequest liveBloodRequest = new LiveBloodRequest(date, location.latitude, location.longitude, reason, bloodGroup);
 
                                     liveRequest.setValue(liveBloodRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
@@ -119,11 +196,16 @@ public class DonnerListFragment extends Fragment {
 //                                    {
 //                                        liveRequest.child("DonorsFound").child(donnersData.get(i).getUid()).child("radius").setValue(radiusData.get(i));
 //                                    }
+
                                                 Toast.makeText(getContext(), "Request Placed Successfully", Toast.LENGTH_LONG).show();
                                             }
                                         }
                                     });
-                                    proSwipeBtn.showResultIcon(true); // false if task failed
+                                    proSwipeBtn.showResultIcon(true);
+                                    proSwipeBtn.setVisibility(View.INVISIBLE);
+                                    viewRequestButton.setVisibility(View.VISIBLE);
+
+                                    // false if task failed
                                 }
                             }
 
@@ -135,7 +217,7 @@ public class DonnerListFragment extends Fragment {
 
 
                     }
-                }, 2000);
+                }, 1000);
             }
         });
         donnerListRecycler = v.findViewById(R.id.donnerListRecycler);
@@ -144,14 +226,7 @@ public class DonnerListFragment extends Fragment {
         animation_view2 = v.findViewById(R.id.animation_view2);
         donnerListAdapter = new DonnerListAdapter(getContext(), donnersData);
         donnerListRecycler.setAdapter(donnerListAdapter);
-        ImageView closeButtonDonnerList = v.findViewById(R.id.closeButtonDonnerList);
-        closeButtonDonnerList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                animation_view2.cancelAnimation();
-                SearchDonnerFragment.donnerListClose(1);
-            }
-        });
+
         TextView bloodGroupSearchDonor = v.findViewById(R.id.bloodGroupSearchDonor);
         bloodGroupSearchDonor.setText(bloodGroup);
         donnersKey = AppData.getDonners();
@@ -161,6 +236,77 @@ public class DonnerListFragment extends Fragment {
         return v;
     }
 
+    private void moveToArchive() {
+        DatabaseReference liveRequest = FirebaseDatabase.getInstance().getReference("LiveRequest").child(FirebaseAuth.getInstance().getUid());
+        ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(true);
+        progressDialog.setMessage("Cancelling Your Request!");
+        progressDialog.show();
+        liveRequest.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                LiveBloodRequest liveBloodRequest = dataSnapshot.getValue(LiveBloodRequest.class);
+                if (liveBloodRequest != null) {
+                    DatabaseReference archiveRef = FirebaseDatabase.getInstance().getReference("RequestArchive").child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+                    String key = archiveRef.push().getKey();
+                    archiveRef.child(key).setValue(liveBloodRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                liveRequest.child("DonorsFound").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                                            AcceptingData acceptingData = dataSnapshot1.getValue(AcceptingData.class);
+                                            if (acceptingData != null) {
+                                                if (acceptingData.isAccepted()) {
+                                                    archiveRef.child(key).child("AcceptedDonor").child(Objects.requireNonNull(dataSnapshot1.getKey())).setValue(acceptingData);
+                                                }
+                                            }
+                                        }
+                                        liveRequest.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    progressDialog.dismiss();
+                                                    if (task.isSuccessful()) {
+                                                        animation_view2.cancelAnimation();
+                                                        SearchDonnerFragment.donnerListClose(1);
+                                                        Toast.makeText(getContext(), "Request Cancelled Successfully", Toast.LENGTH_LONG).show();
+                                                    } else {
+                                                        Toast.makeText(getContext(), task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                                    }
+                                                    //Toast.makeText(getContext(), "Request Cancelled Successfully", Toast.LENGTH_LONG).show();
+                                                } else {
+                                                    Toast.makeText(getContext(), task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        });
+
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                            }
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
     @Override
     public void onDetach() {
         super.onDetach();
@@ -176,7 +322,7 @@ public class DonnerListFragment extends Fragment {
             //Log.e("Donor's Token",userProfile.getToken());
             String tempToken = AppData.getUserProfile().getToken();
             Log.e("MyToken", tempToken);
-            String notificationMessage = AppData.getUserProfile().getName() + " Searching " + userProfile.getBloodGroup() + " Blood\nContact: " + AppData.getUserProfile().getMobileNumber() + "\nReason: " + reason;
+            String notificationMessage = AppData.getUserProfile().getName() + " Requesting For " + userProfile.getBloodGroup() + " Blood\nTap To Accept/View";
             NotificationData notificationData = new NotificationData(notificationMessage, "Nearby Blood Request!", AppData.getUserProfile().getUid());
 
 
@@ -225,7 +371,7 @@ public class DonnerListFragment extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
                             if (userProfile != null) {
-                                if (donnersData.size() != 10) {
+                                if (donnersData.size() != 20) {
                                     try {
                                         int day, month, year;
                                         int userDay, userMonth, userYear;
@@ -274,6 +420,7 @@ public class DonnerListFragment extends Fragment {
 
                     @Override
                     public void run() {
+                        proSwipeBtn.setVisibility(View.INVISIBLE);
                         noDonor.setVisibility(View.VISIBLE);
                         animation_view2.setVisibility(View.VISIBLE);
                     }

@@ -39,6 +39,7 @@ import com.teamjhj.donator_247blood.Adapter.BottomTabAdapter;
 import com.teamjhj.donator_247blood.DataModel.AppData;
 import com.teamjhj.donator_247blood.DataModel.UserProfile;
 import com.teamjhj.donator_247blood.Fragment.BloodRequestDialog;
+import com.teamjhj.donator_247blood.Fragment.ViewPendingHistoryDialog;
 import com.teamjhj.donator_247blood.Helper.BottomTabViewPager;
 import com.teamjhj.donator_247blood.R;
 import com.teamjhj.donator_247blood.Services.BackgroundJobService;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             if (mobile.contains("Comments")) {
                 startActivity(new Intent(this, NotificationActivity.class));
                 //finish();
-            } else if (mobile.contains("Messenger!")) {
+            } else if (mobile.contains("Messenger")) {
                 startActivity(new Intent(this, MessengerActivity.class));
             } else if (mobile.contentEquals(FirebaseAuth.getInstance().getUid())) {
                 BloodRequestDialog bloodRequestDialog = new BloodRequestDialog(mobile);
@@ -90,7 +91,18 @@ public class MainActivity extends AppCompatActivity {
 //                    Toast.makeText(this, s.getLocalizedMessage(), Toast.LENGTH_LONG)
 //                            .show();
 //                }
+            } else if (mobile.contains("EmergencyRequest")) {
+                startActivity(new Intent(this, MyRequestActivity.class));
+            } else if (mobile.contains("BloodFeedReq")) {
+                Intent i = new Intent(this, MyRequestActivity.class);
+                i.putExtra("tabChange", true);
+                startActivity(i);
             }
+//            else if(mobile.contains("PendingHistory"))
+//            {
+//                ViewPendingHistoryDialog viewPendingHistoryDialog=new ViewPendingHistoryDialog();
+//                viewPendingHistoryDialog.show(getSupportFragmentManager(),"PendingHistory");
+//            }
         }
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, new OnSuccessListener<InstanceIdResult>() {
             @Override
@@ -101,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         initializeView();
+
 //        Constraints constraints = new Constraints.Builder()
 //                .setRequiredNetworkType(NetworkType.CONNECTED)
 //                .build();
@@ -119,6 +132,22 @@ public class MainActivity extends AppCompatActivity {
 
         int result = jobScheduler.schedule(jobInfo);
 
+
+        DatabaseReference historyQuery = FirebaseDatabase.getInstance().getReference("PendingDonationConfirmation").child(FirebaseAuth.getInstance().getUid());
+        historyQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    ViewPendingHistoryDialog viewPendingHistoryDialog = new ViewPendingHistoryDialog();
+                    viewPendingHistoryDialog.show(getSupportFragmentManager(), "PendingHistory");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -235,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLocationChanged(Location location) {
                 if (location != null) {
+
                     if (userProfile.isAvailable()) {
                         try {
                             geoFire.setLocation(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()), new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
@@ -250,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    } else if (dayCount <= 90) {
+                    } else {
                         availableDonner.child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())).removeValue();
                     }
                 }

@@ -83,7 +83,7 @@ public class SignInActivity extends AppCompatActivity {
                 verificationCode.getEditText().setText(code);
                 verifyVerificationCode(code);
             } else {
-                submitButton.setVisibility(View.GONE);
+                // submitButton.setVisibility(View.INVISIBLE);
                 againText.setVisibility(View.VISIBLE);
                 sendAgainButton.setVisibility(View.VISIBLE);
                 loading_sign_in.setVisibility(View.GONE);

@@ -6,15 +6,33 @@ public class LiveBloodRequest {
     private Date date;
     private double lat, lon;
     private String reason;
-
+    private String bloodGroup;
+    private String key;
     public LiveBloodRequest() {
     }
 
-    public LiveBloodRequest(Date date, double lat, double lon, String reason) {
+    public LiveBloodRequest(Date date, double lat, double lon, String reason, String bloodGroup) {
         this.date = date;
         this.lat = lat;
         this.lon = lon;
         this.reason = reason;
+        this.bloodGroup = bloodGroup;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public void setBloodGroup(String bloodGroup) {
+        this.bloodGroup = bloodGroup;
     }
 
     public String getReason() {

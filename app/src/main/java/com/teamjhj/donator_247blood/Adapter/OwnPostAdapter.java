@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.teamjhj.donator_247blood.DataModel.NonEmergencyInfo;
 import com.teamjhj.donator_247blood.Fragment.BloodFeedFragment;
+import com.teamjhj.donator_247blood.Fragment.BloodFeedRequestFragment;
 import com.teamjhj.donator_247blood.Fragment.CommentBottomSheetFragment;
 import com.teamjhj.donator_247blood.R;
 
@@ -29,10 +31,12 @@ import java.util.ArrayList;
 public class OwnPostAdapter extends RecyclerView.Adapter<OwnPostAdapter.OwnPostViewHolder> {
     private Context ctx;
     private ArrayList<NonEmergencyInfo> nonEmergencyInfos;
+    private FragmentManager fm;
 
-    public OwnPostAdapter(Context ctx, ArrayList<NonEmergencyInfo> nonEmergencyInfos) {
+    public OwnPostAdapter(Context ctx, ArrayList<NonEmergencyInfo> nonEmergencyInfos, FragmentManager fm) {
         this.ctx = ctx;
         this.nonEmergencyInfos = nonEmergencyInfos;
+        this.fm = fm;
     }
 
     @NonNull
@@ -47,7 +51,7 @@ public class OwnPostAdapter extends RecyclerView.Adapter<OwnPostAdapter.OwnPostV
         holder.reasonMyPost.setText(nonEmergencyInfos.get(position).getReason());
 
 
-        String placeHolder = " " + nonEmergencyInfos.get(position).getDate() + "-" + nonEmergencyInfos.get(position).getMonth() + "-" + nonEmergencyInfos.get(position).getYear();
+        String placeHolder = nonEmergencyInfos.get(position).getDate() + "-" + nonEmergencyInfos.get(position).getMonth() + "-" + nonEmergencyInfos.get(position).getYear();
         holder.dateMyPost.setText(placeHolder);
         String blood1, blood2;
         if (nonEmergencyInfos.get(position).getSelectedBloodGroup().contains("A+")) {
@@ -82,7 +86,7 @@ public class OwnPostAdapter extends RecyclerView.Adapter<OwnPostAdapter.OwnPostV
         holder.bloodGroupLargeMyPost.setText(blood1);
         holder.bloodGroupSmallMyPost.setText(blood2);
         try {
-            placeHolder = " " + nonEmergencyInfos.get(position).getBags();
+            placeHolder = nonEmergencyInfos.get(position).getBags();
 
             holder.bagMyPost.setText(placeHolder);
         } catch (Exception e) {
@@ -119,6 +123,14 @@ public class OwnPostAdapter extends RecyclerView.Adapter<OwnPostAdapter.OwnPostV
                         .setNegativeButton("No", null)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
+            }
+        });
+        holder.my_post_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BloodFeedRequestFragment bloodFeedRequestFragment = new BloodFeedRequestFragment(nonEmergencyInfos.get(position));
+                //bloodFeedRequestFragment.setCancelable(false);
+                bloodFeedRequestFragment.show(fm, "BloodFeedRequest");
             }
         });
 
@@ -199,10 +211,14 @@ public class OwnPostAdapter extends RecyclerView.Adapter<OwnPostAdapter.OwnPostV
         return nonEmergencyInfos.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     class OwnPostViewHolder extends RecyclerView.ViewHolder {
         TextView reasonMyPost, dateMyPost, bagMyPost, bloodGroupLargeMyPost, bloodGroupSmallMyPost;
         ImageView commentMyPost, removeMyPost;
-
+        CardView my_post_card;
         OwnPostViewHolder(@NonNull View itemView) {
             super(itemView);
             reasonMyPost = itemView.findViewById(R.id.reasonMyPost);
@@ -212,6 +228,7 @@ public class OwnPostAdapter extends RecyclerView.Adapter<OwnPostAdapter.OwnPostV
             bloodGroupSmallMyPost = itemView.findViewById(R.id.bloodGroupSmallMyPost);
             commentMyPost = itemView.findViewById(R.id.commentMyPost);
             removeMyPost = itemView.findViewById(R.id.removeMyPost);
+            my_post_card = itemView.findViewById(R.id.my_post_card);
 
 
         }

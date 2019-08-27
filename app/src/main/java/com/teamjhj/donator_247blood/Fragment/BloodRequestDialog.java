@@ -3,9 +3,12 @@ package com.teamjhj.donator_247blood.Fragment;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -27,14 +30,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.teamjhj.donator_247blood.Activity.ChatActivity;
+import com.teamjhj.donator_247blood.DataModel.AppData;
 import com.teamjhj.donator_247blood.DataModel.LiveBloodRequest;
+import com.teamjhj.donator_247blood.DataModel.NotificationData;
+import com.teamjhj.donator_247blood.DataModel.NotificationSender;
 import com.teamjhj.donator_247blood.DataModel.UserProfile;
 import com.teamjhj.donator_247blood.R;
+import com.teamjhj.donator_247blood.RestApi.ApiClient;
+import com.teamjhj.donator_247blood.RestApi.ApiInterface;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
 import in.shadowfax.proswipebutton.ProSwipeButton;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BloodRequestDialog extends DialogFragment {
     ProSwipeButton proSwipeBtn;
@@ -58,8 +73,16 @@ public class BloodRequestDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_fragment_blood_request, null);
-
-
+        ConnectivityManager cm =
+                (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert cm != null;
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        if (!isConnected) {
+            Toast.makeText(getContext(), "Check Internet Connectivity", Toast.LENGTH_SHORT).show();
+            dismiss();
+        }
         DatabaseReference liveRequest = FirebaseDatabase.getInstance().getReference("LiveRequest").child(key);
 
         headingBloodRequest = v.findViewById(R.id.nameBloodRequest);
@@ -79,6 +102,7 @@ public class BloodRequestDialog extends DialogFragment {
         callButtonLiveRequest = v.findViewById(R.id.callButtonLiveRequest);
         mapButtonLiveRequest = v.findViewById(R.id.mapButtonLiveRequest);
         messengerButtonLiveRequest = v.findViewById(R.id.messengerButtonLiveRequest);
+
         DatabaseReference user = FirebaseDatabase.getInstance().getReference("UserProfile").child(key);
         user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -103,6 +127,15 @@ public class BloodRequestDialog extends DialogFragment {
                                 Toast.makeText(ctx, s.getLocalizedMessage(), Toast.LENGTH_LONG)
                                         .show();
                             }
+                        }
+                    });
+                    messengerButtonLiveRequest.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent i = new Intent(ctx, ChatActivity.class);
+                            i.putExtra("Name", userProfile.getName());
+                            i.putExtra("uid", userProfile.getUid());
+                            startActivity(i);
                         }
                     });
                 }
@@ -144,6 +177,7 @@ public class BloodRequestDialog extends DialogFragment {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
+                                                sendNotification();
                                                 proSwipeBtn.showResultIcon(true); // false if task failed
                                             } else {
                                                 proSwipeBtn.showResultIcon(false);
@@ -164,7 +198,23 @@ public class BloodRequestDialog extends DialogFragment {
 
             }
         });
+        liveRequest.child("DonorsFound").child(FirebaseAuth.getInstance().getUid()).child("accepted").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Boolean accept = dataSnapshot.getValue(Boolean.class);
+                if (accept != null) {
+                    if (accept) {
+                        Toast.makeText(ctx, "Already Responded!", Toast.LENGTH_SHORT).show();
+                        dismiss();
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         liveRequest.child("DonorsFound").child(FirebaseAuth.getInstance().getUid()).child("radius").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -186,6 +236,41 @@ public class BloodRequestDialog extends DialogFragment {
 
         builder.setView(v);
         return builder.create();
+    }
+
+    private void sendNotification() {
+        try {
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            String tempToken = AppData.getUserProfile().getToken();
+            Log.e("MyToken", tempToken);
+            String notificationMessage = AppData.getUserProfile().getName() + " Accepted Your Emergency Blood Request!";
+            NotificationData notificationData = new NotificationData(notificationMessage, "Request Accepted!", "EmergencyRequest");
+            Date date = Calendar.getInstance().getTime();
+            notificationData.setDate(date);
+            //NotificationSender notificationSender = new NotificationSender(postOwner.getToken(), notificationData);
+            NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
+            DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid());
+
+            notification.push().setValue(notificationData);
+            Call<ResponseBody> bodyCall = apiInterface.sendNotification(notificationSender);
+
+            bodyCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    Log.e("Response Code", response.code() + "");
+                    Log.e("Error MEssage", response.message());
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setBloodGroup(UserProfile userProfile) {

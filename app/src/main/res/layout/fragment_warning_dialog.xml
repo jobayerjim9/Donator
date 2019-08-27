@@ -4,23 +4,32 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/warningDissmissButton"
-        style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginEnd="16dp"
-        android:text="Ok" />
-
-    <TextView
-        android:id="@+id/textView8"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:text="You Have An Pending Blood Request!\nYou Can Cancel It Or Choose A Donor From\nProfile->Post->Emergency"
-        android:textAlignment="center"
-        android:textColor="@color/black" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/viewReqWarning"
+            style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginEnd="32dp"
+            android:layout_weight="1"
+            android:text="View Request" />
+
+        <Button
+            android:id="@+id/warningDissmissButton"
+            style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginStart="32dp"
+            android:layout_weight="1"
+            android:text="Ok" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView7"
@@ -32,4 +41,15 @@
         android:textAlignment="center"
         android:textColor="@color/material_background"
         android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="You Have An Pending Blood Request!\nYou Can Cancel It Or Choose A Donor From\nMenu->Post->Emergency"
+        android:textAlignment="center"
+        android:textColor="@color/black" />
+
 </LinearLayout>

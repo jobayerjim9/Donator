@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +36,8 @@ import com.teamjhj.donator_247blood.RestApi.ApiInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 import okhttp3.ResponseBody;
@@ -49,6 +52,7 @@ public class ChatActivity extends AppCompatActivity {
     String message, placeHolder = " ";
     TextView statusChat, no_chat_Label;
     LottieAnimationView no_chat;
+    private ShimmerFrameLayout chatShimmer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,9 +71,12 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         chatRecycler = findViewById(R.id.chatRecycler);
+        chatShimmer = findViewById(R.id.chatShimmer);
+        chatShimmer.startShimmer();
         no_chat_Label = findViewById(R.id.no_chat_Label);
         no_chat = findViewById(R.id.no_chat);
         statusChat = findViewById(R.id.statusChat);
+
         chatRecycler.setLayoutManager(new LinearLayoutManager(this));
         messagingAdapter = new MessagingAdapter(this, chatData);
         chatRecycler.setAdapter(messagingAdapter);
@@ -81,12 +88,18 @@ public class ChatActivity extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     ChatData data = dataSnapshot1.getValue(ChatData.class);
                     chatData.add(data);
-                    messagingAdapter.notifyDataSetChanged();
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatActivity.this);
-                    linearLayoutManager.setReverseLayout(true);
-                    chatRecycler.setLayoutManager(linearLayoutManager);
-
+                    chatRecycler.scrollToPosition(chatData.size() - 1);
                 }
+                Collections.sort(chatData, new Comparator<ChatData>() {
+                    @Override
+                    public int compare(ChatData chatData, ChatData t1) {
+                        return chatData.getMessageTime().compareTo(t1.getMessageTime());
+                    }
+                });
+                //Collections.reverse(chatData);
+                chatShimmer.stopShimmer();
+                chatShimmer.setVisibility(View.GONE);
+                messagingAdapter.notifyDataSetChanged();
                 if (chatData.isEmpty()) {
                     no_chat.setVisibility(View.VISIBLE);
                     no_chat_Label.setVisibility(View.VISIBLE);

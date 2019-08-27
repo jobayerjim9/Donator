@@ -3,7 +3,7 @@ package com.teamjhj.donator_247blood.DataModel;
 public class DonationHistory {
     String hospitalName, key;
     int day, month, year;
-
+    int dayCount;
     public DonationHistory() {
     }
 
@@ -12,6 +12,14 @@ public class DonationHistory {
         this.day = day;
         this.month = month;
         this.year = year;
+    }
+
+    public int getDayCount() {
+        return dayCount;
+    }
+
+    public void setDayCount(int dayCount) {
+        this.dayCount = dayCount;
     }
 
     public String getKey() {

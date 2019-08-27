@@ -7,8 +7,8 @@
         drawable="@drawable/ic_feed"
         text="@string/feed" />
     <tab
-        drawable="@drawable/ic_profile"
-        text="@string/profile" />
+        drawable="@drawable/ic_menu"
+        text="@string/menu" />
 
 
 </tabs>

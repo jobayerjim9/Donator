@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.teamjhj.donator_247blood.Adapter.OwnPostAdapter;
 import com.teamjhj.donator_247blood.DataModel.NonEmergencyInfo;
 import com.teamjhj.donator_247blood.R;
@@ -28,24 +29,30 @@ public class YourPostFragment extends Fragment {
     static RecyclerView ownPostRecycler;
     static RecyclerView.LayoutManager layoutManager;
     static TextView notFoundOwnPost;
-    static ArrayList<NonEmergencyInfo> nonEmergencyInfosData;
+    static ArrayList<NonEmergencyInfo> nonEmergencyInfosData = new ArrayList<>();
     static OwnPostAdapter ownPostAdapter;
-
+    private static ShimmerFrameLayout myPostShimmer;
     public YourPostFragment() {
         // Required empty public constructor
     }
 
     public static void refreshRecycler(ArrayList<NonEmergencyInfo> nonEmergencyInfos, Context ctx) {
         nonEmergencyInfosData.clear();
-        if (nonEmergencyInfos.size() == 0) {
-            notFoundOwnPost.setVisibility(View.VISIBLE);
-        } else {
-            nonEmergencyInfosData.addAll(nonEmergencyInfos);
-            notFoundOwnPost.setVisibility(View.GONE);
-        }
-        ownPostAdapter.notifyDataSetChanged();
-        if (swipeYourPost.isRefreshing()) {
-            swipeYourPost.setRefreshing(false);
+        try {
+            myPostShimmer.stopShimmer();
+            myPostShimmer.setVisibility(View.GONE);
+            if (nonEmergencyInfos.size() == 0) {
+                notFoundOwnPost.setVisibility(View.VISIBLE);
+            } else {
+                nonEmergencyInfosData.addAll(nonEmergencyInfos);
+                notFoundOwnPost.setVisibility(View.GONE);
+            }
+            ownPostAdapter.notifyDataSetChanged();
+            if (swipeYourPost.isRefreshing()) {
+                swipeYourPost.setRefreshing(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -56,9 +63,11 @@ public class YourPostFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_your_post, container, false);
         nonEmergencyInfosData = new ArrayList<>();
         ownPostRecycler = v.findViewById(R.id.ownPostRecycler);
+        myPostShimmer = v.findViewById(R.id.myPostShimmer);
+        myPostShimmer.startShimmer();
         layoutManager = new LinearLayoutManager(getContext());
         ownPostRecycler.setLayoutManager(layoutManager);
-        ownPostAdapter = new OwnPostAdapter(getContext(), nonEmergencyInfosData);
+        ownPostAdapter = new OwnPostAdapter(getContext(), nonEmergencyInfosData, getChildFragmentManager());
         ownPostRecycler.setAdapter(ownPostAdapter);
         swipeYourPost = v.findViewById(R.id.swipeYourPost);
         notFoundOwnPost = v.findViewById(R.id.notFoundOwnPost);
@@ -69,11 +78,12 @@ public class YourPostFragment extends Fragment {
                         android.R.color.holo_green_light,
                         android.R.color.holo_orange_light,
                         android.R.color.holo_red_light);
+                myPostShimmer.startShimmer();
                 BloodFeedFragment.getDataFromDatabase();
             }
 
         });
-
+        BloodFeedFragment.getDataFromDatabase();
         return v;
     }
 

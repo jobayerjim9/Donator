@@ -60,6 +60,24 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/nameBloodRequest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/roboto_bold"
+                    android:maxLines="1"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/reasonBloodReq"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -83,29 +101,10 @@
                         android:layout_marginTop="4dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:text="25 K.M Away"
                         android:textAlignment="viewEnd"
                         android:textColor="@color/black"
                         android:textSize="10sp" />
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/reasonBloodReq"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="TextView"
-                    android:textColor="@color/black"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/nameBloodRequest"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/roboto_bold"
-                    android:text="123456789012345"
-                    android:textColor="@color/black" />
 
             </LinearLayout>
 
@@ -123,7 +122,6 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/teko_semibold"
                     android:gravity="center"
-                    android:text="A+"
                     android:textColor="@color/colorPrimary"
                     android:textSize="24sp" />
 
@@ -134,7 +132,6 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="A Positive"
                     android:textColor="@color/material_background" />
             </LinearLayout>
         </LinearLayout>

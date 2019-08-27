@@ -6,7 +6,7 @@ public class NonEmergencyInfo {
     private double lat, longt;
     private boolean liked;
     private double distamceFromUser;
-
+    private boolean closed;
     public NonEmergencyInfo() {
     }
 
@@ -17,6 +17,14 @@ public class NonEmergencyInfo {
         this.lat = lat;
         this.longt = longt;
         this.uid = uid;
+    }
+
+    public boolean isClosed() {
+        return closed;
+    }
+
+    public void setClosed(boolean closed) {
+        this.closed = closed;
     }
 
     public String getBags() {

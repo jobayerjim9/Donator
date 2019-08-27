@@ -31,7 +31,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/teko_semibold"
-                android:text="Nearby Blood Request!"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 
@@ -47,7 +46,6 @@
             android:id="@+id/notificationDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
             android:textColor="@color/black" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

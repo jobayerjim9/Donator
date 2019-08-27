@@ -2,7 +2,7 @@ package com.teamjhj.donator_247blood.DataModel;
 
 import java.util.Date;
 
-public class ChatData {
+public class ChatData implements Comparable<ChatData> {
     private String senderName, recieverName, message, uid, messegingKey, messageCreator;
     private boolean sent, recieved, viewed = false;
     private Date messageTime;
@@ -108,5 +108,10 @@ public class ChatData {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Override
+    public int compareTo(ChatData chatData) {
+        return getMessageTime().compareTo(chatData.getMessageTime());
     }
 }
