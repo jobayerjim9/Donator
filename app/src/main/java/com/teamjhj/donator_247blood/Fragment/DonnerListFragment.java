@@ -126,60 +126,15 @@ public class DonnerListFragment extends Fragment {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
-                                    closeButtonDonnerList.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            new AlertDialog.Builder(getContext())
-                                                    .setTitle("Cancel Request")
-                                                    .setMessage("Are you sure you want to cancel this Request?")
-
-                                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            moveToArchive();
-                                                        }
-                                                    })
-
-                                                    .setNegativeButton("Keep Pending", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                                            animation_view2.cancelAnimation();
-                                                            SearchDonnerFragment.donnerListClose(1);
-                                                        }
-                                                    })
-                                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                                    .show();
-                                        }
-                                    });
                                     proSwipeBtn.showResultIcon(false);
                                     proSwipeBtn.setVisibility(View.INVISIBLE);
                                     viewRequestButton.setVisibility(View.VISIBLE);
                                     viewRequestButton.setText("View Pending Request!");
-                                    Toast.makeText(getContext(), "You Already Have A Pending Request! Close It For Request Again!", Toast.LENGTH_LONG).show();
+                                    UnsuccessfulDialog unsuccessfulDialog=new UnsuccessfulDialog("You Already Have A Pending Request! Close It For Request Again!");
+                                    unsuccessfulDialog.show(getChildFragmentManager(),"UnsuccessfulDialog");
+
+
                                 } else {
-                                    closeButtonDonnerList.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            new AlertDialog.Builder(getContext())
-                                                    .setTitle("Cancel Request")
-                                                    .setMessage("Are you sure you want to cancel this Request?")
-
-                                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            moveToArchive();
-                                                        }
-                                                    })
-
-                                                    .setNegativeButton("Keep Pending", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                                            animation_view2.cancelAnimation();
-                                                            SearchDonnerFragment.donnerListClose(1);
-                                                        }
-                                                    })
-                                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                                    .show();
-                                        }
-                                    });
                                     for (int i = 0; i < donnersData.size(); i++) {
                                         sendNotification(donnersData.get(i));
 
@@ -191,13 +146,14 @@ public class DonnerListFragment extends Fragment {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                liveRequest.child("DonorsFound").child(FirebaseAuth.getInstance().getUid()).child("radius").setValue(radiusData.get(0));
-//                                    for (int i=0;i<donnersData.size();i++)
-//                                    {
-//                                        liveRequest.child("DonorsFound").child(donnersData.get(i).getUid()).child("radius").setValue(radiusData.get(i));
-//                                    }
+                                                //liveRequest.child("DonorsFound").child(FirebaseAuth.getInstance().getUid()).child("radius").setValue(radiusData.get(0));
+                                    for (int i=0;i<donnersData.size();i++)
+                                    {
+                                        liveRequest.child("DonorsFound").child(donnersData.get(i).getUid()).child("radius").setValue(radiusData.get(i));
+                                    }
 
-                                                Toast.makeText(getContext(), "Request Placed Successfully", Toast.LENGTH_LONG).show();
+                                    SuccessfulDialog successfulDialog=new SuccessfulDialog("Request Placed Successfully");
+                                    successfulDialog.show(getChildFragmentManager(),"SuccessfulDialog");
                                             }
                                         }
                                     });
@@ -268,19 +224,20 @@ public class DonnerListFragment extends Fragment {
                                         liveRequest.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
+
                                                     progressDialog.dismiss();
                                                     if (task.isSuccessful()) {
                                                         animation_view2.cancelAnimation();
                                                         SearchDonnerFragment.donnerListClose(1);
-                                                        Toast.makeText(getContext(), "Request Cancelled Successfully", Toast.LENGTH_LONG).show();
+                                                        SuccessfulDialog successfulDialog=new SuccessfulDialog("Request Cancelled Successfully");
+                                                        successfulDialog.show(getChildFragmentManager(),"SuccessfulDialog");
+
                                                     } else {
-                                                        Toast.makeText(getContext(), task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                                        UnsuccessfulDialog unsuccessfulDialog=new UnsuccessfulDialog(task.getException().getLocalizedMessage());
+                                                        unsuccessfulDialog.show(getChildFragmentManager(),"UnsuccessfulDialog");
+
                                                     }
                                                     //Toast.makeText(getContext(), "Request Cancelled Successfully", Toast.LENGTH_LONG).show();
-                                                } else {
-                                                    Toast.makeText(getContext(), task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                                                }
                                             }
                                         });
 
@@ -316,7 +273,7 @@ public class DonnerListFragment extends Fragment {
         try {
             Date date = Calendar.getInstance().getTime();
 
-            DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid());
+            DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(userProfile.getUid());
             apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Log.e("UID", userProfile.getUid());
             //Log.e("Donor's Token",userProfile.getToken());
@@ -325,11 +282,10 @@ public class DonnerListFragment extends Fragment {
             String notificationMessage = AppData.getUserProfile().getName() + " Requesting For " + userProfile.getBloodGroup() + " Blood\nTap To Accept/View";
             NotificationData notificationData = new NotificationData(notificationMessage, "Nearby Blood Request!", AppData.getUserProfile().getUid());
 
-
             notificationData.setDate(date);
             notification.push().setValue(notificationData);
-            //NotificationSender notificationSender = new NotificationSender(userProfile.getToken(), notificationData);
-            NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
+            NotificationSender notificationSender = new NotificationSender(userProfile.getToken(), notificationData);
+            //NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
             Call<ResponseBody> bodyCall = apiInterface.sendNotification(notificationSender);
             bodyCall.enqueue(new Callback<ResponseBody>() {
                 @Override

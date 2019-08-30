@@ -6,22 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".Activity.MainActivity">
 
-    <com.iammert.library.readablebottombar.ReadableBottomBar
-        android:id="@+id/readableBottomBar"
+    <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/bottom_menu"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
+        app:cnb_menuResource="@menu/bottom_nav_menu"
+        app:cnb_orientationMode="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottomTabViewPager"
-        app:rbb_tabs="@xml/tabs" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.teamjhj.donator_247blood.Helper.BottomTabViewPager
         android:id="@+id/bottomTabViewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/readableBottomBar"
+        android:isScrollContainer="true"
+        android:nestedScrollingEnabled="true"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

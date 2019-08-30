@@ -4,6 +4,27 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/teko_semibold"
+        android:text="Pending Blood Request"
+        android:textAlignment="center"
+        android:textColor="@color/material_background"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="You Have An Pending Blood Request!\nYou Can Cancel It Or Choose A Donor From\nMenu->Post->Emergency"
+        android:textAlignment="center"
+        android:textColor="@color/black" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,26 +51,5 @@
             android:layout_weight="1"
             android:text="Ok" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:fontFamily="@font/teko_semibold"
-        android:text="Pending Blood Request"
-        android:textAlignment="center"
-        android:textColor="@color/material_background"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="You Have An Pending Blood Request!\nYou Can Cancel It Or Choose A Donor From\nMenu->Post->Emergency"
-        android:textAlignment="center"
-        android:textColor="@color/black" />
 
 </LinearLayout>

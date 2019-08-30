@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.RequestArchiveActivity"></activity>
+        <activity android:name=".Activity.AppIntoActivity"></activity>
+        <activity android:name=".Activity.RequestArchiveActivity" />
         <activity android:name=".Activity.PostsActivity" />
         <activity android:name=".Activity.MyRequestActivity" />
         <activity android:name=".Activity.ProfileActivity" />
@@ -29,8 +30,11 @@
             android:theme="@style/AppThemeSignIn" />
         <activity
             android:name=".Activity.MainActivity"
+            android:parentActivityName=".Activity.LoadingScreenActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activity.SignInActivity"
             android:theme="@style/AppThemeSignIn" />
-        <activity android:name=".Activity.SignInActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -75,7 +79,9 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_application_id" />
-
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
         <service
             android:name=".Services.MyFirebaseMessagingService"
             android:exported="false">
@@ -87,13 +93,13 @@
             android:name=".Services.BackgroundJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
-
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <dist:module dist:instant="true" />
 

@@ -153,20 +153,20 @@ public class AcceptedDonorAdapter extends RecyclerView.Adapter<AcceptedDonorAdap
         try {
             Date date = Calendar.getInstance().getTime();
 
-            DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid());
+            DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(userProfile.getUid());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Log.e("UID", userProfile.getUid());
             //Log.e("Donor's Token",userProfile.getToken());
-            String tempToken = AppData.getUserProfile().getToken();
-            Log.e("MyToken", tempToken);
+           // String tempToken = AppData.getUserProfile().getToken();
+           // Log.e("MyToken", tempToken);
             String notificationMessage = AppData.getUserProfile().getName() + " Confirmed That He Received Blood From You" + "\nTap To Update";
             NotificationData notificationData = new NotificationData(notificationMessage, "Update Your History", "PendingHistory");
 
 
             notificationData.setDate(date);
             notification.push().setValue(notificationData);
-            //NotificationSender notificationSender = new NotificationSender(userProfile.getToken(), notificationData);
-            NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
+            NotificationSender notificationSender = new NotificationSender(userProfile.getToken(), notificationData);
+            //NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
             Call<ResponseBody> bodyCall = apiInterface.sendNotification(notificationSender);
             bodyCall.enqueue(new Callback<ResponseBody>() {
                 @Override

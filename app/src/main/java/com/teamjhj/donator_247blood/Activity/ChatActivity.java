@@ -140,9 +140,8 @@ public class ChatActivity extends AppCompatActivity {
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
                                         if (userProfile != null) {
-                                            if (!placeHolder.contains("Online")) {
-                                                sendNotification(userProfile);
-                                            }
+                                            sendNotification(userProfile);
+
                                         }
                                     }
 
@@ -216,8 +215,8 @@ public class ChatActivity extends AppCompatActivity {
             Date date = Calendar.getInstance().getTime();
             notificationData.setDate(date);
             // notification.push().setValue(notificationData);
-            //NotificationSender notificationSender = new NotificationSender(userProfile.getToken(), notificationData);
-            NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
+            NotificationSender notificationSender = new NotificationSender(userProfile.getToken(), notificationData);
+           // NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
             Call<ResponseBody> bodyCall = apiInterface.sendNotification(notificationSender);
             bodyCall.enqueue(new Callback<ResponseBody>() {
                 @Override

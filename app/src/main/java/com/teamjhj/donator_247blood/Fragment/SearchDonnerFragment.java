@@ -3,6 +3,7 @@ package com.teamjhj.donator_247blood.Fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -35,6 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -46,6 +50,9 @@ import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -61,6 +68,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.teamjhj.donator_247blood.Activity.AboutUsActivity;
+import com.teamjhj.donator_247blood.Activity.AppIntoActivity;
 import com.teamjhj.donator_247blood.Activity.SignInActivity;
 import com.teamjhj.donator_247blood.DataModel.AppData;
 import com.teamjhj.donator_247blood.DataModel.NonEmergencyInfo;
@@ -69,6 +77,7 @@ import com.teamjhj.donator_247blood.R;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -84,10 +93,10 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SearchDonnerFragment extends Fragment {
+public class SearchDonnerFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
     static ExpandedMenuView expMenu;
     static ImageView logoImage;
-    private static ScrollView searchDonnerScrollView;
+    private static NestedScrollView searchDonnerScrollView;
     private static FrameLayout searchDonnerFrameLayout;
     private static FragmentManager fm;
     private static TextView searchDonorLabel;
@@ -115,63 +124,17 @@ public class SearchDonnerFragment extends Fragment {
     private List<Place.Field> fields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ADDRESS);
     private ProgressDialog progressDialog;
     private LottieAnimationView blood_transfusion;
+    private Button datePickerSearchDonor;
+    private EditText bagsSearchDonor;
+    int day,month,year;
     public SearchDonnerFragment() {
+        day = 0;
+        month = 0;
+        year = 0;
         // Required empty public constructor
     }
 
-    public static void hideKeyboard(Activity activity) {
-        InputMethodManager inputManager = (InputMethodManager) activity
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        // check if no view has focus:
-        View currentFocusedView = activity.getCurrentFocus();
-        if (currentFocusedView != null) {
-            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
-
-    public static void donnerListClose(int n) {
-        if (n == 1) {
-            DonnerListFragment fragment = (DonnerListFragment) fm.findFragmentById(R.id.searchDonnerFrameLayout);
-            FragmentTransaction donnerListFragment = fm.beginTransaction();
-            donnerListFragment.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-            if (fragment != null) {
-                donnerListFragment.remove(fragment).commit();
-            }
-
-            searchDonnerScrollView.setVisibility(View.VISIBLE);
-            searchDonnerFrameLayout.setVisibility(View.GONE);
-            searchCardView.setVisibility(View.VISIBLE);
-            expMenu.setVisibility(View.VISIBLE);
-            searchDonorLabel.setVisibility(View.VISIBLE);
-            logoImage.setVisibility(View.VISIBLE);
-        } else if (n == 2) {
-            NonEmergencyInfoFragment fragment = (NonEmergencyInfoFragment) fm.findFragmentById(R.id.searchDonnerFrameLayout);
-            FragmentTransaction donnerListFragment = fm.beginTransaction();
-
-            if (fragment != null) {
-                donnerListFragment.remove(fragment).commit();
-            }
-
-            searchDonnerScrollView.setVisibility(View.VISIBLE);
-            searchDonnerFrameLayout.setVisibility(View.GONE);
-        }
-
-
-    }
-
-    public void test() {
-        if (reasonInput.getEditText().getText().toString().isEmpty()) {
-            Toast.makeText(getContext(), "Empty", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(getContext(), reasonInput.getEditText().getText().toString(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -186,8 +149,10 @@ public class SearchDonnerFragment extends Fragment {
         }
         //locationLabellocationLabel = view.findViewById(R.id.locationLabel);
         pickupLocation = view.findViewById(R.id.pickLocation);
+        datePickerSearchDonor = view.findViewById(R.id.datePickerSearchDonor);
         radioGroup = view.findViewById(R.id.radioGroup);
         reasonInput = view.findViewById(R.id.reasonInput);
+        bagsSearchDonor = view.findViewById(R.id.bagsSearchDonor);
         expMenu = view.findViewById(R.id.expMenu);
         searchDonorLabel = view.findViewById(R.id.searchDonorLabel);
         searchDonnerScrollView = view.findViewById(R.id.searchDonnerScrollView);
@@ -212,11 +177,17 @@ public class SearchDonnerFragment extends Fragment {
 
             }
         });
+        datePickerSearchDonor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePickerDialouge();
+            }
+        });
         expMenu.setIcons(
                 new ExpandedMenuItem(R.drawable.ic_sign_out, "Sign Out"),
                 new ExpandedMenuItem(R.drawable.ic_share, "Share"),
                 new ExpandedMenuItem(R.drawable.ic_about, "About Us"),
-                new ExpandedMenuItem(R.drawable.ic_support, "Contact Us")
+                new ExpandedMenuItem(R.drawable.ic_support, "Intro")
 
 
         );
@@ -237,8 +208,7 @@ public class SearchDonnerFragment extends Fragment {
                 } else if (i == 2) {
                     getContext().startActivity(new Intent(getActivity(), AboutUsActivity.class));
                 } else if (i == 3) {
-                    SupportFragment supportFragment = new SupportFragment();
-                    supportFragment.show(getChildFragmentManager(), "SupportFragment");
+                    startActivity(new Intent(getContext(), AppIntoActivity.class));
                 }
             }
         });
@@ -249,8 +219,10 @@ public class SearchDonnerFragment extends Fragment {
         selectBloodGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                pos = position;
-                selectedBloodGroup = Objects.requireNonNull(adapter.getItem(position)).toString();
+                if(position!=0) {
+                    pos = position;
+                    selectedBloodGroup = Objects.requireNonNull(adapter.getItem(position)).toString();
+                }
             }
 
             @Override
@@ -267,9 +239,13 @@ public class SearchDonnerFragment extends Fragment {
                 blood_transfusion.setVisibility(View.GONE);
 
                 if (i == R.id.nonEmmargencyButton) {
-
-                    searchDonner.setText("Post");
+                    datePickerSearchDonor.setVisibility(View.VISIBLE);
+                    bagsSearchDonor.setVisibility(View.VISIBLE);
+                    searchDonner.setText("Post To Blood Feed");
                 } else if (i == R.id.emmargencyButton) {
+                    datePickerSearchDonor.setVisibility(View.GONE);
+                    bagsSearchDonor.setVisibility(View.GONE);
+
                     DatabaseReference checkReq = FirebaseDatabase.getInstance().getReference("LiveRequest").child(FirebaseAuth.getInstance().getUid());
                     checkReq.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -308,13 +284,69 @@ public class SearchDonnerFragment extends Fragment {
         });
         return view;
     }
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager inputManager = (InputMethodManager) activity
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
 
+        // check if no view has focus:
+        View currentFocusedView = activity.getCurrentFocus();
+        if (currentFocusedView != null) {
+            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    public static void donnerListClose(int n) {
+        if (n == 1) {
+            DonnerListFragment fragment = (DonnerListFragment) fm.findFragmentById(R.id.searchDonnerFrameLayout);
+            FragmentTransaction donnerListFragment = fm.beginTransaction();
+            donnerListFragment.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+            if (fragment != null) {
+                donnerListFragment.remove(fragment).commit();
+            }
+
+            searchDonnerScrollView.setVisibility(View.VISIBLE);
+            searchDonnerFrameLayout.setVisibility(View.GONE);
+            searchCardView.setVisibility(View.VISIBLE);
+            expMenu.setVisibility(View.VISIBLE);
+            searchDonorLabel.setVisibility(View.VISIBLE);
+            logoImage.setVisibility(View.VISIBLE);
+        }
+//        else if (n == 2) {
+//            NonEmergencyInfoFragment fragment = (NonEmergencyInfoFragment) fm.findFragmentById(R.id.searchDonnerFrameLayout);
+//            FragmentTransaction donnerListFragment = fm.beginTransaction();
+//
+//            if (fragment != null) {
+//                donnerListFragment.remove(fragment).commit();
+//            }
+//
+//            searchDonnerScrollView.setVisibility(View.VISIBLE);
+//            searchDonnerFrameLayout.setVisibility(View.GONE);
+//        }
+
+
+    }
+
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
     private void validateInfo() {
 
         System.out.println(pickedLocation + "-" + selectedBloodGroup + "-" + currentButtonName + "-" + reasonInput.getEditText().getText().toString());
-        if (pickedLocation == null || selectedBloodGroup.isEmpty() || currentButtonName == null || reasonInput.getEditText().getText().toString().isEmpty()) {
-            Toast.makeText(getContext(), "Please Fill Required Information", Toast.LENGTH_LONG).show();
-        } else {
+        if (pickedLocation == null) {
+            Toast.makeText(getContext(), "Pick The Location Of The Hospital Where Blood Need", Toast.LENGTH_LONG).show();
+        }
+        else if(selectedBloodGroup==null)
+        {
+            Toast.makeText(getContext(), "Select Your Desired Blood Group", Toast.LENGTH_SHORT).show();
+        }
+        else if(reasonInput.getEditText().getText().toString().isEmpty())
+        {
+            Toast.makeText(getContext(), " Enter Why You Need Blood!\n Example:- Dengue", Toast.LENGTH_SHORT).show();
+        }
+        else {
             if (currentButtonName.equals("Emergency")) {
                 Objects.requireNonNull(getActivity()).getWindow().setSoftInputMode(
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -332,22 +364,57 @@ public class SearchDonnerFragment extends Fragment {
                 logoImage.setVisibility(View.GONE);
                 searchNearbyDonner();
             } else {
-                nonEmergencyInfo = new NonEmergencyInfo(add, selectedBloodGroup, reasonInput.getEditText().getText().toString(), pickedLocation.latitude, pickedLocation.longitude, FirebaseAuth.getInstance().getUid());
-                AppData.setNonEmergencyInfo(nonEmergencyInfo);
-                Objects.requireNonNull(getActivity()).getWindow().setSoftInputMode(
-                        WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-//                searchDonnerScrollView.setVisibility(View.GONE);
-//                searchDonnerFrameLayout.setVisibility(View.VISIBLE);
-//                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-//                fragmentTransaction.add(R.id.searchDonnerFrameLayout, new NonEmergencyInfoFragment());
-//                fragmentTransaction.commit();
-
-                NonEmergencyInfoFragment nonEmergencyInfoFragment = new NonEmergencyInfoFragment();
-                nonEmergencyInfoFragment.show(getChildFragmentManager(), "SomeInfo");
+                String bags=bagsSearchDonor.getText().toString();
+                if(bags.isEmpty())
+                {
+                    Toast.makeText(getContext(), "Enter How Many Bags Of Blood You Need", Toast.LENGTH_SHORT).show();
+                }
+                else if(day==0 || month ==0 || year==0)
+                {
+                    Toast.makeText(getContext(), "Pick A Date!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    nonEmergencyInfo = new NonEmergencyInfo(add, selectedBloodGroup, reasonInput.getEditText().getText().toString(), pickedLocation.latitude, pickedLocation.longitude, FirebaseAuth.getInstance().getUid());
+                    nonEmergencyInfo.setDate(day);
+                    nonEmergencyInfo.setMonth(month);
+                    nonEmergencyInfo.setYear(year);
+                    nonEmergencyInfo.setPhone(AppData.getUserProfile().getMobileNumber());
+                    nonEmergencyInfo.setName(AppData.getUserProfile().getName());
+                    nonEmergencyInfo.setBags(bags);
+                    uploadPost();
+                    Objects.requireNonNull(getActivity()).getWindow().setSoftInputMode(
+                            WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                }
             }
         }
     }
+    private void uploadPost() {
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Please Wait! Posting Your Post!");
+        progressDialog.setCancelable(true);
+        progressDialog.show();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("NonEmergencyRequests").child(nonEmergencyInfo.getYear() + "").child(nonEmergencyInfo.getMonth() + "").child(nonEmergencyInfo.getDate() + "");
+        databaseReference.push().setValue(nonEmergencyInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                progressDialog.dismiss();
+                if (task.isSuccessful()) {
+                    BloodFeedFragment.getDataFromDatabase();
+                    SuccessfulDialog successfulDialog=new SuccessfulDialog("Successfully Posted!");
+                    successfulDialog.show(getChildFragmentManager(),"SuccessfulDialog");
+                }
 
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                UnsuccessfulDialog unsuccessfulDialog=new UnsuccessfulDialog(e.getLocalizedMessage());
+                unsuccessfulDialog.show(getChildFragmentManager(),"UnsuccessfulDialog");
+                progressDialog.dismiss();
+            }
+        });
+
+    }
     private void searchNearbyDonner() {
 
         final DatabaseReference availableDonner = FirebaseDatabase.getInstance().getReference("AvailableDonner");
@@ -520,7 +587,29 @@ public class SearchDonnerFragment extends Fragment {
 
         }
     }
+    private void showDatePickerDialouge() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                Objects.requireNonNull(getContext()),
+                this,
+                Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        datePickerDialog.show();
+    }
 
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        this.day = dayOfMonth;
+        this.month = month + 1;
+        this.year = year;
+        String temp = dayOfMonth + "-" + this.month + "-" + year;
+        datePickerSearchDonor.setText(temp);
+
+
+
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

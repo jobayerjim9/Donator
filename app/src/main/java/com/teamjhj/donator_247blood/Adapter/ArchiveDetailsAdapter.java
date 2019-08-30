@@ -39,7 +39,10 @@ public class ArchiveDetailsAdapter extends RecyclerView.Adapter<ArchiveDetailsAd
     public int getItemCount() {
         return userProfiles.size();
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     class ArchiveDetailsViewHolder extends RecyclerView.ViewHolder {
         TextView nameArchive;
         ImageView callArchive, messageArchive;

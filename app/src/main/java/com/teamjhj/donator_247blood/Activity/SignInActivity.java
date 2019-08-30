@@ -67,10 +67,11 @@ public class SignInActivity extends AppCompatActivity {
 
         @Override
         public void onCodeAutoRetrievalTimeOut(String s) {
-            submitButton.setVisibility(View.GONE);
+            //submitButton.setVisibility(View.GONE);
             againText.setVisibility(View.VISIBLE);
             sendAgainButton.setVisibility(View.VISIBLE);
-            loading_sign_in.setVisibility(View.GONE);
+            loading_sign_in.cancelAnimation();
+           // loading_sign_in.setVisibility(View.GONE);
         }
 
         @Override
@@ -86,16 +87,16 @@ public class SignInActivity extends AppCompatActivity {
                 // submitButton.setVisibility(View.INVISIBLE);
                 againText.setVisibility(View.VISIBLE);
                 sendAgainButton.setVisibility(View.VISIBLE);
-                loading_sign_in.setVisibility(View.GONE);
+                loading_sign_in.cancelAnimation();
             }
         }
 
         @Override
         public void onVerificationFailed(FirebaseException e) {
-            submitButton.setVisibility(View.GONE);
+           // submitButton.setVisibility(View.GONE);
             againText.setVisibility(View.VISIBLE);
             sendAgainButton.setVisibility(View.VISIBLE);
-            loading_sign_in.setVisibility(View.GONE);
+            loading_sign_in.cancelAnimation();
             e.printStackTrace();
             Toast.makeText(SignInActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
         }

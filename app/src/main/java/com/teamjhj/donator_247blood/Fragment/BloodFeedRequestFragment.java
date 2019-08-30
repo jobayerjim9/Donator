@@ -101,7 +101,7 @@ public class BloodFeedRequestFragment extends DialogFragment {
                                         Log.d("BloodFeedReq", userProfile.getName());
                                         userProfiles.add(userProfile);
                                         adapter.notifyDataSetChanged();
-
+                                       // bloodFeedRequestRecycler.
                                     }
                                 }
 
@@ -112,6 +112,8 @@ public class BloodFeedRequestFragment extends DialogFragment {
                             });
                         }
                     } else {
+
+                        dismiss();
                         optInText.setText("No Opt In Donors");
                     }
 

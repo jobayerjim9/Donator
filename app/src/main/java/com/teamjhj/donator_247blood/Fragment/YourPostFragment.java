@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.teamjhj.donator_247blood.Adapter.OwnPostAdapter;
 import com.teamjhj.donator_247blood.DataModel.NonEmergencyInfo;
@@ -32,6 +33,7 @@ public class YourPostFragment extends Fragment {
     static ArrayList<NonEmergencyInfo> nonEmergencyInfosData = new ArrayList<>();
     static OwnPostAdapter ownPostAdapter;
     private static ShimmerFrameLayout myPostShimmer;
+    static LottieAnimationView nothingFoundFeedRequest;
     public YourPostFragment() {
         // Required empty public constructor
     }
@@ -42,8 +44,10 @@ public class YourPostFragment extends Fragment {
             myPostShimmer.stopShimmer();
             myPostShimmer.setVisibility(View.GONE);
             if (nonEmergencyInfos.size() == 0) {
+                nothingFoundFeedRequest.setVisibility(View.VISIBLE);
                 notFoundOwnPost.setVisibility(View.VISIBLE);
             } else {
+                nothingFoundFeedRequest.setVisibility(View.GONE);
                 nonEmergencyInfosData.addAll(nonEmergencyInfos);
                 notFoundOwnPost.setVisibility(View.GONE);
             }
@@ -64,6 +68,7 @@ public class YourPostFragment extends Fragment {
         nonEmergencyInfosData = new ArrayList<>();
         ownPostRecycler = v.findViewById(R.id.ownPostRecycler);
         myPostShimmer = v.findViewById(R.id.myPostShimmer);
+        nothingFoundFeedRequest = v.findViewById(R.id.nothingFoundFeedRequest);
         myPostShimmer.startShimmer();
         layoutManager = new LinearLayoutManager(getContext());
         ownPostRecycler.setLayoutManager(layoutManager);

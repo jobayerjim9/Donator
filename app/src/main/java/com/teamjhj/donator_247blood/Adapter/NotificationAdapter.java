@@ -63,7 +63,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid()).child(notificationData.get(position).getKey());
                 notification.child("clicked").setValue(true);
                 notificationData.get(position).setClicked(true);
-                if (notificationData.get(position).getTag().contentEquals(FirebaseAuth.getInstance().getUid())) {
+                if (notificationData.get(position).getTag().length()>=26) {
                     String tag = notificationData.get(position).getTag();
 
 

@@ -26,6 +26,33 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/nameBloodFeed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_name_tag"
+                    android:drawablePadding="2dp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/reasonBloodFeed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_hash_tag"
+                    android:drawablePadding="2dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -53,33 +80,6 @@
                         android:gravity="center_vertical"
                         android:textColor="@color/black" />
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/reasonBloodFeed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_hash_tag"
-                    android:drawablePadding="2dp"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:textColor="@color/black"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/nameBloodFeed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_name_tag"
-                    android:drawablePadding="2dp"
-                    android:fontFamily="@font/roboto_bold"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:textColor="@color/black" />
 
             </LinearLayout>
 
@@ -167,15 +167,6 @@
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_messenger" />
 
-            <ImageView
-                android:id="@+id/commentBloodFeed"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/ic_comment" />
-
             <com.like.LikeButton
                 android:id="@+id/likeButton"
                 android:layout_width="match_parent"
@@ -194,6 +185,15 @@
                 app:unlike_drawable="@drawable/ic_star_true">
 
             </com.like.LikeButton>
+
+            <ImageView
+                android:id="@+id/commentBloodFeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_comment" />
 
             <ImageView
                 android:id="@+id/mapBloodFeed"

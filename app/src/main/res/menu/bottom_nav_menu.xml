@@ -1,0 +1,19 @@
+<!-- bottom_menu.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/search_donor"
+        android:icon="@drawable/ic_search"
+        android:title="Search Donor"
+        app:cnb_iconColor="@color/black"/>
+    <item
+        android:id="@+id/blood_feed"
+        android:icon="@drawable/ic_feed"
+        android:title="Blood Feed"
+        app:cnb_iconColor="@color/black"/>
+    <item
+        android:id="@+id/menu"
+        android:icon="@drawable/ic_menu"
+        android:title="Menu"
+        app:cnb_iconColor="@color/black" />
+</menu>

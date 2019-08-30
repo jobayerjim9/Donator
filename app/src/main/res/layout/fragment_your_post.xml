@@ -6,6 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".Fragment.YourPostFragment">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/nothingFoundFeedRequest"
+        android:layout_width="0dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="connecting_animation.json"
+        app:lottie_loop="true" />
+
     <TextView
         android:id="@+id/notFoundOwnPost"
         android:layout_width="0dp"
@@ -13,7 +28,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:fontFamily="@font/roboto_bold"
+        android:fontFamily="@font/teko_semibold"
         android:text="You Don't Have Any Live Post!"
         android:textAlignment="center"
         android:textColor="@android:color/white"
@@ -22,7 +37,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/nothingFoundFeedRequest" />
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeYourPost"
         android:layout_width="match_parent"

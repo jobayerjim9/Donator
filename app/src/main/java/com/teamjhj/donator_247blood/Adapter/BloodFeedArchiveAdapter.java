@@ -34,7 +34,10 @@ public class BloodFeedArchiveAdapter extends RecyclerView.Adapter<BloodFeedArchi
         this.ctx = ctx;
         this.nonEmergencyInfos = nonEmergencyInfos;
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     @NonNull
     @Override
     public BloodFeedArchiveViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

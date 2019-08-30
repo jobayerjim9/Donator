@@ -35,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.iammert.library.readablebottombar.ReadableBottomBar;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 import com.teamjhj.donator_247blood.Adapter.BottomTabAdapter;
 import com.teamjhj.donator_247blood.DataModel.AppData;
 import com.teamjhj.donator_247blood.DataModel.UserProfile;
@@ -54,7 +55,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
     private final String DATE_FORMAT = "d/M/yyyy";
-    ReadableBottomBar readableBottomBar;
+    //ReadableBottomBar readableBottomBar;
     Handler mHandler;
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -66,31 +67,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (getIntent().getExtras() != null) {
-            Bundle bundle = getIntent().getExtras();
-            String mobile = bundle.getString("mobile");
+        String mobile =  getIntent().getStringExtra("mobile");
+        if (mobile!=null) {
             if (mobile.contains("Comments")) {
                 startActivity(new Intent(this, NotificationActivity.class));
                 //finish();
             } else if (mobile.contains("Messenger")) {
                 startActivity(new Intent(this, MessengerActivity.class));
-            } else if (mobile.contentEquals(FirebaseAuth.getInstance().getUid())) {
+            } else if (mobile.length()>=26) {
                 BloodRequestDialog bloodRequestDialog = new BloodRequestDialog(mobile);
                 bloodRequestDialog.setCancelable(false);
                 bloodRequestDialog.show(getSupportFragmentManager(), "LiveRequest");
-//                Uri u = Uri.parse("tel:" + mobile);
-//
-//                // Create the intent and set the data for the
-//                // intent as the phone number.
-//                Intent i = new Intent(Intent.ACTION_DIAL, u);
-//
-//                try {
-//                    startActivity(i);
-//                    // finish();
-//                } catch (SecurityException s) {
-//                    Toast.makeText(this, s.getLocalizedMessage(), Toast.LENGTH_LONG)
-//                            .show();
-//                }
             } else if (mobile.contains("EmergencyRequest")) {
                 startActivity(new Intent(this, MyRequestActivity.class));
             } else if (mobile.contains("BloodFeedReq")) {
@@ -156,22 +143,40 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
     }
-
+    private ChipNavigationBar bottom_menu;
     private void initializeView() {
-        readableBottomBar = findViewById(R.id.readableBottomBar);
+        bottom_menu = findViewById(R.id.bottom_menu);
         final BottomTabViewPager bottomTabViewPager = findViewById(R.id.bottomTabViewPager);
         BottomTabAdapter bottomTabAdapter = new BottomTabAdapter(getSupportFragmentManager(), 3);
         bottomTabViewPager.setAdapter(bottomTabAdapter);
         bottomTabViewPager.setPagingEnabled(false);
-        readableBottomBar.setOnItemSelectListener(new ReadableBottomBar.ItemSelectListener() {
+        bottom_menu.setItemSelected(R.id.search_donor);
+        bottom_menu.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
             @Override
             public void onItemSelected(int i) {
-                bottomTabViewPager.setCurrentItem(i);
+                if(i==R.id.search_donor)
+                {
+
+//                    bottom_menu.setItemSelected(i);
+                    bottomTabViewPager.setCurrentItem(0);
+                }
+                else if(i==R.id.blood_feed)
+                {
+                    bottomTabViewPager.setCurrentItem(1);
+                }
+                else if(i==R.id.menu)
+                {
+
+                    bottomTabViewPager.setCurrentItem(2);
+                }
+                Log.d("Tab Id",i+"");
+
 
             }
         });
+
         getUserProfile();
-        bottomTabViewPager.setOffscreenPageLimit(3);
+       // bottomTabViewPager.setOffscreenPageLimit(3);
 
 
     }

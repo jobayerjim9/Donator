@@ -118,9 +118,20 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                         return Integer.compare(donationHistory.getYear(), t1.getYear());
                     }
                 });
-                int day = donationHistories.get(donationHistories.size() - 1).getDay();
-                int month = donationHistories.get(donationHistories.size() - 1).getMonth();
-                int year = donationHistories.get(donationHistories.size() - 1).getYear();
+                int day,month,year;
+                if(donationHistories.size()==0)
+                {
+                    day = 0;
+                    month = 0;
+                    year = -1;
+                }
+                else
+                {
+                    day = donationHistories.get(donationHistories.size() - 1).getDay();
+                    month = donationHistories.get(donationHistories.size() - 1).getMonth();
+                    year = donationHistories.get(donationHistories.size() - 1).getYear();
+                }
+
                 profile.child("lastDonationDate").setValue(day);
                 profile.child("lastDonationMonth").setValue(month);
                 profile.child("lastDonationYear").setValue(year).addOnCompleteListener(new OnCompleteListener<Void>() {

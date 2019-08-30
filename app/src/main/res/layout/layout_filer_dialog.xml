@@ -70,22 +70,6 @@
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="24dp" />
 
-        <com.manojbhadane.QButton
-            android:id="@+id/doneButtonSort"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="16dp"
-            android:fontFamily="@font/roboto_bold"
-            android:gravity="center"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="Filter By Blood Group"
-            android:textColor="@color/white" />
-
         <Button
             android:id="@+id/backButtonSort"
             android:layout_width="wrap_content"

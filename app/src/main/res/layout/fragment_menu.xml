@@ -33,7 +33,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="8dp"
+                app:cardCornerRadius="0dp"
                 app:cardElevation="8dp"
                 app:cardMaxElevation="8dp">
 
@@ -50,14 +50,6 @@
                         android:layout_weight="1"
                         android:src="@drawable/profile_avatar" />
 
-                    <ImageView
-                        android:id="@+id/imageView14"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_arrow" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -69,7 +61,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/textView9"
+                            android:id="@+id/name_menu"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-black"
@@ -84,6 +76,14 @@
                             android:text="View Your Profile" />
                     </LinearLayout>
 
+                    <ImageView
+                        android:id="@+id/imageView14"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_arrow" />
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -97,7 +97,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="8dp"
+                app:cardCornerRadius="0dp"
                 app:cardElevation="8dp"
                 app:cardMaxElevation="8dp">
 
@@ -119,13 +119,6 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_blood_hand" />
 
-                    <ImageView
-                        android:id="@+id/imageView15"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_arrow" />
-
                     <TextView
                         android:id="@+id/textView15"
                         android:layout_width="match_parent"
@@ -137,6 +130,13 @@
                         android:text="My Requests"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/imageView15"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_arrow" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -151,7 +151,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="8dp"
+                app:cardCornerRadius="0dp"
                 app:cardElevation="8dp"
                 app:cardMaxElevation="8dp">
 
@@ -174,13 +174,6 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_notification_bell" />
 
-                    <ImageView
-                        android:id="@+id/imageView16"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_arrow" />
-
                     <TextView
                         android:id="@+id/textView14"
                         android:layout_width="match_parent"
@@ -192,6 +185,13 @@
                         android:text="Notifications"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/imageView16"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_arrow" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -206,7 +206,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="8dp"
+                app:cardCornerRadius="0dp"
                 app:cardElevation="8dp"
                 app:cardMaxElevation="8dp">
 
@@ -228,13 +228,6 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_messenger" />
 
-                    <ImageView
-                        android:id="@+id/imageView18"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_arrow" />
-
                     <TextView
                         android:id="@+id/textView12"
                         android:layout_width="match_parent"
@@ -246,6 +239,13 @@
                         android:text="Messenger"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/imageView18"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_arrow" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -260,7 +260,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="8dp"
+                app:cardCornerRadius="0dp"
                 app:cardElevation="8dp"
                 app:cardMaxElevation="8dp">
 
@@ -282,13 +282,6 @@
                         android:paddingEnd="4dp"
                         android:src="@drawable/ic_compose" />
 
-                    <ImageView
-                        android:id="@+id/imageView17"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_arrow" />
-
                     <TextView
                         android:id="@+id/textView17"
                         android:layout_width="match_parent"
@@ -300,6 +293,13 @@
                         android:text="Saved Posts"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/imageView17"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_arrow" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -315,7 +315,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="8dp"
+                app:cardCornerRadius="0dp"
                 app:cardElevation="8dp"
                 app:cardMaxElevation="8dp">
 
@@ -337,13 +337,6 @@
                         android:paddingEnd="4dp"
                         android:src="@drawable/ic_archive" />
 
-                    <ImageView
-                        android:id="@+id/imageView193"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_arrow" />
-
                     <TextView
                         android:id="@+id/textView171"
                         android:layout_width="match_parent"
@@ -355,6 +348,13 @@
                         android:text="Archived Request"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/imageView193"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_arrow" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -369,7 +369,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="8dp"
+                app:cardCornerRadius="0dp"
                 app:cardElevation="8dp"
                 app:cardMaxElevation="8dp">
 
@@ -391,13 +391,6 @@
                         android:paddingEnd="4dp"
                         android:src="@drawable/ic_stop_prop" />
 
-                    <ImageView
-                        android:id="@+id/imageView192"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_arrow" />
-
                     <TextView
                         android:id="@+id/textView172"
                         android:layout_width="match_parent"
@@ -409,6 +402,13 @@
                         android:text="History Request"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/imageView192"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_arrow" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

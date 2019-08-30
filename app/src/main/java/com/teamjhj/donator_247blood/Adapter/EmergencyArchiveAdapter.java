@@ -37,7 +37,10 @@ public class EmergencyArchiveAdapter extends RecyclerView.Adapter<EmergencyArchi
         this.liveBloodRequests = liveBloodRequests;
         this.fm = fm;
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     @NonNull
     @Override
     public EmergencyArchiveViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.teamjhj.donator_247blood.Adapter.RequestAdapter;
@@ -29,7 +30,7 @@ public class PostsActivity extends AppCompatActivity {
     private static ShimmerFrameLayout postShimmer;
     private int date, year, month;
     private DatabaseReference databaseReference;
-
+    private static LottieAnimationView nothingFoundPosts;
     public static void updateData(ArrayList<NonEmergencyInfo> nonEmergencyInfos) {
 
         try {
@@ -38,8 +39,10 @@ public class PostsActivity extends AppCompatActivity {
             postShimmer.setVisibility(View.GONE);
             if (nonEmergencyInfos.size() == 0) {
                 notFoundSaved.setVisibility(View.VISIBLE);
+                nothingFoundPosts.setVisibility(View.VISIBLE);
             } else {
                 notFoundSaved.setVisibility(View.GONE);
+                nothingFoundPosts.setVisibility(View.GONE);
                 nonEmergencyInfosData.addAll(nonEmergencyInfos);
 
             }
@@ -69,6 +72,7 @@ public class PostsActivity extends AppCompatActivity {
         savedRecycler.setAdapter(requestAdapter);
         swipeSavedPost = findViewById(R.id.swipeSavedPost);
         notFoundSaved = findViewById(R.id.notFoundSaved);
+        nothingFoundPosts = findViewById(R.id.nothingFoundPosts);
         swipeSavedPost.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

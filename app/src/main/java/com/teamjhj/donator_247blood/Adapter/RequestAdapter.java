@@ -38,7 +38,10 @@ import com.teamjhj.donator_247blood.DataModel.AppData;
 import com.teamjhj.donator_247blood.DataModel.NonEmergencyInfo;
 import com.teamjhj.donator_247blood.DataModel.NotificationData;
 import com.teamjhj.donator_247blood.DataModel.NotificationSender;
+import com.teamjhj.donator_247blood.DataModel.UserProfile;
 import com.teamjhj.donator_247blood.Fragment.CommentBottomSheetFragment;
+import com.teamjhj.donator_247blood.Fragment.SuccessfulDialog;
+import com.teamjhj.donator_247blood.Fragment.UnsuccessfulDialog;
 import com.teamjhj.donator_247blood.R;
 import com.teamjhj.donator_247blood.RestApi.ApiClient;
 import com.teamjhj.donator_247blood.RestApi.ApiInterface;
@@ -58,10 +61,12 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     private DatabaseReference postReference;
     private Context ctx;
     private ArrayList<NonEmergencyInfo> nonEmergencyInfos;
+    FragmentManager manager;
     int distanceFromUser = -1;
     public RequestAdapter(Context ctx, ArrayList<NonEmergencyInfo> nonEmergencyInfos) {
         this.ctx = ctx;
         this.nonEmergencyInfos = nonEmergencyInfos;
+        manager = ((AppCompatActivity) ctx).getSupportFragmentManager();
     }
 
     @NonNull
@@ -148,6 +153,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
 
                         new AlertDialog.Builder(ctx)
                                 .setTitle("Opt In?")
+                                .setCancelable(false)
                                 .setMessage("Are you sure you want to Opt In?")
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
@@ -159,15 +165,20 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
-                                                            sendNotification();
+                                                            sendNotification(position);
                                                             holder.accept_btn_blood_feed.setVisibility(View.GONE);
                                                             holder.acceptedText.setVisibility(View.VISIBLE);
                                                             holder.acceptedText.setText("Opt In Successful");
                                                             holder.accept_btn_blood_feed.showResultIcon(true);
 
+                                                            SuccessfulDialog successfulDialog=new SuccessfulDialog("Opt In Successful");
+                                                            successfulDialog.show(manager,"SuccessfulDialog");
+
                                                         } else {
-                                                            Toast.makeText(ctx, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                                                            holder.accept_btn_blood_feed.showResultIcon(false);
+                                                            UnsuccessfulDialog unsuccessfulDialog=new UnsuccessfulDialog(task.getException().getLocalizedMessage());
+                                                            unsuccessfulDialog.show(manager,"UnsuccessfulDialog");
+
+                                                            holder.accept_btn_blood_feed.showResultIcon(false,true);
                                                         }
                                                     }
                                                 });
@@ -176,13 +187,12 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                         });
                                     }
                                 })
-                                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onDismiss(DialogInterface dialogInterface) {
-                                        holder.accept_btn_blood_feed.showResultIcon(false);
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        holder.accept_btn_blood_feed.showResultIcon(false,true);
                                     }
                                 })
-                                .setNegativeButton("No", null)
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .show();
 
@@ -195,8 +205,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         });
         try {
             //  int distanceFromUser=Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(ctx).getString("longitude", "defaultStringIfNothingFound"));
-            SharedPreferences pref = PreferenceManager
-                    .getDefaultSharedPreferences(ctx);
+            SharedPreferences pref = ((AppCompatActivity) ctx).getPreferences(Context.MODE_PRIVATE);
             double longitude = Double.parseDouble(pref.getString("longitude", null));
             double latitude = Double.parseDouble(pref.getString("latitude", null));
             Log.e("SharedPref", longitude + "");
@@ -227,8 +236,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         holder.commentBloodFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                FragmentManager manager = ((AppCompatActivity) ctx).getSupportFragmentManager();
                 CommentBottomSheetFragment comments = new CommentBottomSheetFragment(nonEmergencyInfos.get(position));
                 comments.show(manager, "Comments");
             }
@@ -416,9 +423,12 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     //BloodFeedFragment.getDataFromDatabase();
-                    Toast.makeText(ctx, "This Post Saved To Your Profile Successfully", Toast.LENGTH_LONG).show();
+                    SuccessfulDialog successfulDialog=new SuccessfulDialog("This Post Saved To Your Profile Successfully");
+                    successfulDialog.show(manager,"SuccessfulDialog");
+
                 } else {
-                    Toast.makeText(ctx, "Check Your Internet Connection", Toast.LENGTH_LONG).show();
+                    UnsuccessfulDialog unsuccessfulDialog=new UnsuccessfulDialog("Check Your Internet Connection");
+                    unsuccessfulDialog.show(manager,"UnsuccessfulDialog");
                 }
             }
         });
@@ -430,7 +440,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         return position;
     }
 
-    private void sendNotification() {
+    private void sendNotification(int position) {
         try {
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             String tempToken = AppData.getUserProfile().getToken();
@@ -439,25 +449,41 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             NotificationData notificationData = new NotificationData(notificationMessage, "Request Accepted!", "BloodFeedReq");
             Date date = Calendar.getInstance().getTime();
             notificationData.setDate(date);
-            //NotificationSender notificationSender = new NotificationSender(postOwner.getToken(), notificationData);
-            NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
-            DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid());
-
-            notification.push().setValue(notificationData);
-            Call<ResponseBody> bodyCall = apiInterface.sendNotification(notificationSender);
-
-            bodyCall.enqueue(new Callback<ResponseBody>() {
+            DatabaseReference database=FirebaseDatabase.getInstance().getReference("UserProfile").child(nonEmergencyInfos.get(position).getUid());
+            database.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    Log.e("Response Code", response.code() + "");
-                    Log.e("Error MEssage", response.message());
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    UserProfile userProfile=dataSnapshot.getValue(UserProfile.class);
+                    if(userProfile!=null)
+                    {
+                        NotificationSender notificationSender = new NotificationSender(userProfile.getToken(), notificationData);
+                        //NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
+                        DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(userProfile.getUid());
+
+                        notification.push().setValue(notificationData);
+                        Call<ResponseBody> bodyCall = apiInterface.sendNotification(notificationSender);
+
+                        bodyCall.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                Log.e("Response Code", response.code() + "");
+                                Log.e("Error MEssage", response.message());
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            }
+                        });
+                    }
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
             });
+
 
 
         } catch (Exception e) {

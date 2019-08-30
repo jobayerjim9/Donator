@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -53,7 +54,7 @@ public class EmergencyRequestFragment extends Fragment {
     private ArrayList<UserProfile> userProfiles = new ArrayList<>();
     private RecyclerView acceptedRecycler;
     private ShimmerFrameLayout emergencyRequestShimmer;
-
+    private LottieAnimationView nothingFoundRequest;
     public EmergencyRequestFragment() {
         // Required empty public constructor
     }
@@ -69,6 +70,7 @@ public class EmergencyRequestFragment extends Fragment {
         acceptedRecycler = v.findViewById(R.id.acceptedRecycler);
         reasonBloodPending = v.findViewById(R.id.reasonPendingRequest);
         bloodGroupLargePending = v.findViewById(R.id.bloodGroupLargePending);
+        nothingFoundRequest = v.findViewById(R.id.nothingFoundRequest);
         bloodGroupSmallPending = v.findViewById(R.id.bloodGroupSmallPending);
         no_blood_request = v.findViewById(R.id.no_blood_request);
         acceptedDonorText = v.findViewById(R.id.acceptedDonorText);
@@ -134,6 +136,7 @@ public class EmergencyRequestFragment extends Fragment {
                 if (dataSnapshot.exists()) {
                     emergencyRequestShimmer.stopShimmer();
                     emergencyRequestShimmer.setVisibility(View.GONE);
+                    nothingFoundRequest.setVisibility(View.VISIBLE);
                     no_blood_request.setVisibility(View.VISIBLE);
                     no_blood_request.setText("No Donor Respond!");
                     pendingRequestCard.setVisibility(View.VISIBLE);
@@ -142,6 +145,7 @@ public class EmergencyRequestFragment extends Fragment {
                     emergencyRequestShimmer.stopShimmer();
                     emergencyRequestShimmer.setVisibility(View.GONE);
                     no_blood_request.setVisibility(View.VISIBLE);
+                    nothingFoundRequest.setVisibility(View.VISIBLE);
                     no_blood_request.setText("No Pending Blood Request!");
                     pendingRequestCard.setVisibility(View.GONE);
                     acceptedDonorText.setVisibility(View.GONE);
@@ -163,6 +167,7 @@ public class EmergencyRequestFragment extends Fragment {
 
                                         acceptedDonorAdapter.notifyDataSetChanged();
                                         no_blood_request.setVisibility(View.GONE);
+                                        nothingFoundRequest.setVisibility(View.GONE);
                                         emergencyRequestShimmer.stopShimmer();
                                         emergencyRequestShimmer.setVisibility(View.GONE);
                                     }

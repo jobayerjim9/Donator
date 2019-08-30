@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +35,7 @@ public class EmergencyRequestArchiveFragment extends Fragment {
     TextView no_archived_request;
     private ShimmerFrameLayout emergencyArchiveShimmer;
     private ArrayList<LiveBloodRequest> liveBloodRequests = new ArrayList<>();
-
+    private LottieAnimationView nothingFoundEmergencyArchive;
     public EmergencyRequestArchiveFragment() {
         // Required empty public constructor
     }
@@ -49,6 +50,7 @@ public class EmergencyRequestArchiveFragment extends Fragment {
         emergencyArchiveRecycler = v.findViewById(R.id.emergencyArchiveRecycler);
         no_archived_request = v.findViewById(R.id.no_archived_request);
         emergencyArchiveShimmer = v.findViewById(R.id.emergencyArchiveShimmer);
+        nothingFoundEmergencyArchive = v.findViewById(R.id.nothingFoundEmergencyArchive);
         emergencyArchiveShimmer.startShimmer();
         emergencyArchiveAdapter = new EmergencyArchiveAdapter(getContext(), liveBloodRequests, getChildFragmentManager());
         emergencyArchiveRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -62,6 +64,7 @@ public class EmergencyRequestArchiveFragment extends Fragment {
                     if (liveBloodRequest != null) {
                         emergencyArchiveShimmer.stopShimmer();
                         emergencyArchiveShimmer.setVisibility(View.GONE);
+                        nothingFoundEmergencyArchive.setVisibility(View.GONE);
                         liveBloodRequest.setKey(dataSnapshot1.getKey());
                         liveBloodRequests.add(liveBloodRequest);
                         emergencyArchiveAdapter.notifyDataSetChanged();
@@ -71,10 +74,12 @@ public class EmergencyRequestArchiveFragment extends Fragment {
                     emergencyArchiveShimmer.stopShimmer();
                     emergencyArchiveShimmer.setVisibility(View.GONE);
                     no_archived_request.setVisibility(View.VISIBLE);
+                    nothingFoundEmergencyArchive.setVisibility(View.VISIBLE);
                 } else {
                     emergencyArchiveShimmer.stopShimmer();
                     emergencyArchiveShimmer.setVisibility(View.GONE);
                     no_archived_request.setVisibility(View.GONE);
+                    nothingFoundEmergencyArchive.setVisibility(View.GONE);
                 }
             }
 

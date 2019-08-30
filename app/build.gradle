@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -69,4 +71,11 @@ dependencies {
     implementation 'com.ramijemli.percentagechartview:percentagechartview:0.3.1'
     implementation "androidx.work:work-runtime:2.2.0"
     implementation 'in.shadowfax:proswipebutton:1.2.2'
+    implementation 'com.ismaeldivita.chipnavigation:chip-navigation-bar:1.1.0'
+    implementation "androidx.core:core-ktx:1.0.2"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.github.AppIntro:AppIntro:5.1.0'
+}
+repositories {
+    mavenCentral()
 }

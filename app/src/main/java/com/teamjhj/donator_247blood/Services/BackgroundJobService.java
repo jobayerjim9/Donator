@@ -42,9 +42,11 @@ public class BackgroundJobService extends JobService {
     }
 
     private void updateMessengerActive() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("MessengerChat").child(FirebaseAuth.getInstance().getUid());
-        Date date = Calendar.getInstance().getTime();
-        databaseReference.child("date").setValue(date);
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("MessengerChat").child(FirebaseAuth.getInstance().getUid());
+            Date date = Calendar.getInstance().getTime();
+            databaseReference.child("date").setValue(date);
+        }
 
     }
 

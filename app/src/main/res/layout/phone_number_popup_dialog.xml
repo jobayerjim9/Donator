@@ -28,7 +28,9 @@
         android:layout_height="35dp"
         android:layout_gravity="center"
         android:layout_marginBottom="32dp"
+        android:background="@color/material_background"
         android:fontFamily="sans-serif-black"
         android:text="Save"
-        android:textAllCaps="true" />
+        android:textAllCaps="true"
+        android:textColor="@android:color/white" />
 </LinearLayout>

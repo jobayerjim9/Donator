@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -33,7 +34,7 @@ public class BloodFeedRequestArchiveFragment extends Fragment {
     ArrayList<NonEmergencyInfo> nonEmergencyInfos = new ArrayList<>();
     private ShimmerFrameLayout feedArchiveShimmer;
     private TextView no_archive_blood_feed;
-
+    private LottieAnimationView nothingFoundFeedArchive;
     public BloodFeedRequestArchiveFragment() {
         // Required empty public constructor
     }
@@ -46,6 +47,7 @@ public class BloodFeedRequestArchiveFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_blood_feed_request_archive, container, false);
         RecyclerView bloodFeedArchiveRecycler = v.findViewById(R.id.bloodFeedArchiveRecycler);
         feedArchiveShimmer = v.findViewById(R.id.feedArchiveShimmer);
+        nothingFoundFeedArchive = v.findViewById(R.id.nothingFoundFeedArchive);
         feedArchiveShimmer.startShimmer();
         bloodFeedArchiveRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         BloodFeedArchiveAdapter bloodFeedArchiveAdapter = new BloodFeedArchiveAdapter(getContext(), nonEmergencyInfos);
@@ -67,6 +69,7 @@ public class BloodFeedRequestArchiveFragment extends Fragment {
                                         nonEmergencyInfos.add(nonEmergencyInfo);
                                         feedArchiveShimmer.stopShimmer();
                                         feedArchiveShimmer.setVisibility(View.GONE);
+                                        nothingFoundFeedArchive.setVisibility(View.GONE);
                                         bloodFeedArchiveAdapter.notifyDataSetChanged();
                                     }
                                 }
@@ -79,6 +82,7 @@ public class BloodFeedRequestArchiveFragment extends Fragment {
 
                 }
                 if (nonEmergencyInfos.isEmpty()) {
+                    nothingFoundFeedArchive.setVisibility(View.VISIBLE);
                     no_archive_blood_feed.setVisibility(View.VISIBLE);
                     feedArchiveShimmer.stopShimmer();
                     feedArchiveShimmer.setVisibility(View.GONE);

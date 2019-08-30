@@ -192,9 +192,9 @@ public class CommentBottomSheetFragment extends BottomSheetDialogFragment {
                             NotificationData notificationData = new NotificationData(notificationMessage, "Blood Feed!!", "Comments");
                             Date date = Calendar.getInstance().getTime();
                             notificationData.setDate(date);
-                            //NotificationSender notificationSender = new NotificationSender(postOwner.getToken(), notificationData);
-                            NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
-                            DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid());
+                            NotificationSender notificationSender = new NotificationSender(postOwner.getToken(), notificationData);
+                            //NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
+                            DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(postOwner.getUid());
                             notificationData.setYear(nonEmergencyInfo.getYear());
                             notificationData.setMonth(nonEmergencyInfo.getMonth());
                             notificationData.setDay(nonEmergencyInfo.getDate());

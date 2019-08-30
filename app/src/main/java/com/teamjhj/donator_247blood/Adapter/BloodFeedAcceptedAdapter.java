@@ -31,6 +31,7 @@ import com.teamjhj.donator_247blood.DataModel.NotificationData;
 import com.teamjhj.donator_247blood.DataModel.NotificationSender;
 import com.teamjhj.donator_247blood.DataModel.PendingDonationData;
 import com.teamjhj.donator_247blood.DataModel.UserProfile;
+import com.teamjhj.donator_247blood.Fragment.BloodFeedFragment;
 import com.teamjhj.donator_247blood.R;
 import com.teamjhj.donator_247blood.RestApi.ApiClient;
 import com.teamjhj.donator_247blood.RestApi.ApiInterface;
@@ -111,7 +112,7 @@ public class BloodFeedAcceptedAdapter extends RecyclerView.Adapter<BloodFeedAcce
             @Override
             public void onClick(View view) {
                 placeRequest(position);
-                sendNotification(userProfiles.get(position));
+
 
             }
         });
@@ -121,20 +122,20 @@ public class BloodFeedAcceptedAdapter extends RecyclerView.Adapter<BloodFeedAcce
         try {
             Date date = Calendar.getInstance().getTime();
 
-            DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid());
+            DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(userProfile.getUid());
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-            Log.e("UID", userProfile.getUid());
+            //Log.e("UID", userProfile.getUid());
             //Log.e("Donor's Token",userProfile.getToken());
-            String tempToken = AppData.getUserProfile().getToken();
-            Log.e("MyToken", tempToken);
+            //String tempToken = AppData.getUserProfile().getToken();
+            //Log.e("MyToken", tempToken);
             String notificationMessage = AppData.getUserProfile().getName() + " Confirmed That He Received Blood From You" + "\nTap To Update";
             NotificationData notificationData = new NotificationData(notificationMessage, "Update Your History", "PendingHistory");
 
 
             notificationData.setDate(date);
             notification.push().setValue(notificationData);
-            //NotificationSender notificationSender = new NotificationSender(userProfile.getToken(), notificationData);
-            NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
+            NotificationSender notificationSender = new NotificationSender(userProfile.getToken(), notificationData);
+            //NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
             Call<ResponseBody> bodyCall = apiInterface.sendNotification(notificationSender);
             bodyCall.enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -176,8 +177,10 @@ public class BloodFeedAcceptedAdapter extends RecyclerView.Adapter<BloodFeedAcce
                             databaseReference.push().setValue(pendingDonationData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-
-
+                                    sendNotification(userProfiles.get(position));
+                                    BloodFeedFragment.getDataFromDatabase();
+                                    userProfiles.clear();
+                                    notifyDataSetChanged();
                                     Toast.makeText(ctx, "Placed Successfully", Toast.LENGTH_SHORT).show();
                                 }
                             });

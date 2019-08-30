@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.teamjhj.donator_247blood.Activity.LoadingScreenActivity;
 import com.teamjhj.donator_247blood.Activity.MainActivity;
 import com.teamjhj.donator_247blood.R;
 
@@ -42,15 +43,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotification(RemoteMessage remoteMessage) {
+        String tag="Nothing",tittle="Donator",body="Blank";
+//        tag = remoteMessage.getNotification().getTag();
+//        String tittle = remoteMessage.getNotification().getTitle();
+//        //String tittle=remoteMessage.getData().get("tittle");
+//        String body = remoteMessage.getNotification().getBody();
+        if(remoteMessage.getData().size()>0)
+        {
 
-        String tag = remoteMessage.getNotification().getTag();
-        String tittle = remoteMessage.getNotification().getTitle();
-        //String tittle=remoteMessage.getData().get("tittle");
-        String body = remoteMessage.getNotification().getBody();
+            tag = remoteMessage.getData().get("tag");
+            tittle=remoteMessage.getData().get("title");
+            body=remoteMessage.getData().get("body");
+        }
 
-
+        Log.d("FirebaseFuck",tag);
         RemoteMessage.Notification notification = remoteMessage.getNotification();
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, LoadingScreenActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("mobile", tag);
         intent.putExtras(bundle);

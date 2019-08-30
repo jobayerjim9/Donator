@@ -1,5 +1,6 @@
 package com.teamjhj.donator_247blood.Adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,7 +42,10 @@ public class PendingHistoryAdapter extends RecyclerView.Adapter<PendingHistoryAd
         this.pendingHistories = pendingHistories;
         this.donationHistories = donationHistories;
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     @NonNull
     @Override
     public PendingHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -80,7 +84,10 @@ public class PendingHistoryAdapter extends RecyclerView.Adapter<PendingHistoryAd
     }
 
     private void validate(int position) {
-
+        ProgressDialog progressDialog=new ProgressDialog(ctx);
+        progressDialog.setCancelable(true);
+        progressDialog.setMessage("Adding Your Donation History");
+        progressDialog.show();
         int dayCount = 0;
         int day, month, year;
         if (pendingHistories.get(position).getDate().getYear() < 1900) {
@@ -137,6 +144,7 @@ public class PendingHistoryAdapter extends RecyclerView.Adapter<PendingHistoryAd
             databaseReference.push().setValue(donationHistory).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
+                    progressDialog.dismiss();
                     if (task.isSuccessful()) {
                         int d, m, y;
                         d = AppData.getUserProfile().getLastDonationDate();
@@ -172,6 +180,7 @@ public class PendingHistoryAdapter extends RecyclerView.Adapter<PendingHistoryAd
                 }
             });
         } else {
+            progressDialog.dismiss();
             Toast.makeText(ctx, "You Cannot Donate Twice In 90 Days!", Toast.LENGTH_LONG).show();
         }
     }

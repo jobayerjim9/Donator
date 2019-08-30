@@ -247,25 +247,29 @@ public class BloodRequestDialog extends DialogFragment {
             NotificationData notificationData = new NotificationData(notificationMessage, "Request Accepted!", "EmergencyRequest");
             Date date = Calendar.getInstance().getTime();
             notificationData.setDate(date);
-            //NotificationSender notificationSender = new NotificationSender(postOwner.getToken(), notificationData);
-            NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
-            DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid());
+            if (userProfile!=null)
+            {
+                NotificationSender notificationSender = new NotificationSender(userProfile.getToken(), notificationData);
+               // NotificationSender notificationSender = new NotificationSender(tempToken, notificationData);
+                DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(userProfile.getUid());
 
-            notification.push().setValue(notificationData);
-            Call<ResponseBody> bodyCall = apiInterface.sendNotification(notificationSender);
+                notification.push().setValue(notificationData);
+                Call<ResponseBody> bodyCall = apiInterface.sendNotification(notificationSender);
 
-            bodyCall.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    Log.e("Response Code", response.code() + "");
-                    Log.e("Error MEssage", response.message());
-                }
+                bodyCall.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        Log.e("Response Code", response.code() + "");
+                        Log.e("Error MEssage", response.message());
+                    }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-                }
-            });
+                    }
+                });
+            }
+
 
 
         } catch (Exception e) {

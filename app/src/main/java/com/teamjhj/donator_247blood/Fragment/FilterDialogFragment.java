@@ -38,7 +38,6 @@ public class FilterDialogFragment extends DialogFragment {
         Button sortByNearbyLocation, sortByDate, doneButtonSort, backButtonSort;
         sortByNearbyLocation = v.findViewById(R.id.sortByNearbyLocation);
         sortByDate = v.findViewById(R.id.sortByDate);
-        doneButtonSort = v.findViewById(R.id.doneButtonSort);
         backButtonSort = v.findViewById(R.id.backButtonSort);
         sortSpinner = v.findViewById(R.id.sortSpinner);
         setSpinner();
@@ -58,13 +57,7 @@ public class FilterDialogFragment extends DialogFragment {
                 dismiss();
             }
         });
-        doneButtonSort.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BloodFeedFragment.sortByBloodGroup();
-                dismiss();
-            }
-        });
+
         backButtonSort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,24 +77,18 @@ public class FilterDialogFragment extends DialogFragment {
     }
 
     private void setSpinner() {
-        String compareValue = null;
-        try {
-            compareValue = AppData.getUserProfile().getBloodGroup();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(Objects.requireNonNull(getContext()), R.array.bloodGroups, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortSpinner.setAdapter(adapter);
-        if (compareValue != null) {
-            int spinnerPosition = adapter.getPosition(compareValue);
-            sortSpinner.setSelection(spinnerPosition);
-        }
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String bloodGroup = Objects.requireNonNull(adapter.getItem(position)).toString();
-                BloodFeedFragment.setBloodGroup(bloodGroup);
+                if(position!=0) {
+                    String bloodGroup = Objects.requireNonNull(adapter.getItem(position)).toString();
+                    BloodFeedFragment.setBloodGroup(bloodGroup);
+                    BloodFeedFragment.sortByBloodGroup();
+                    dismiss();
+                }
             }
 
             @Override

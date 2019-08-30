@@ -40,7 +40,10 @@ public class DonnerListAdapter extends RecyclerView.Adapter<DonnerListAdapter.Do
         donnersData = data;
         keys = AppData.getDonners();
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     @NonNull
     @Override
     public DonnerListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,7 +99,7 @@ public class BloodFeedFragment extends Fragment {
         nonEmergencyInfosSaved.clear();
         nonEmergencyInfosOwnPost.clear();
         // bloodRequestRecycler.setAdapter(requestAdapter);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 nonEmergencyInfos.clear();
@@ -138,6 +139,15 @@ public class BloodFeedFragment extends Fragment {
                 if (nonEmergencyInfosOwnPost.size() == 0) {
                     YourPostFragment.refreshRecycler(nonEmergencyInfosOwnPost, ctx);
                 }
+                if (nonEmergencyInfos.size()==0)
+                {
+                    bloodFeedShimmer.stopShimmer();
+                    bloodFeedShimmer.setVisibility(View.GONE);
+                    nothingFoundBloodFeed.setVisibility(View.VISIBLE);
+                    noPostTextView.setVisibility(View.VISIBLE);
+                    requestAdapter.notifyDataSetChanged();
+                }
+
             }
 
             @Override
@@ -172,7 +182,9 @@ public class BloodFeedFragment extends Fragment {
 
                     }
                 });
-                nonEmergencyInfos.add(nonEmergencyInfo);
+                if(!nonEmergencyInfo.isClosed()) {
+                    nonEmergencyInfos.add(nonEmergencyInfo);
+                }
                 if (filter.contains("location")) {
                     sortByLocation();
                 } else if (filter.contains("Blood")) {
@@ -469,6 +481,7 @@ public class BloodFeedFragment extends Fragment {
                     editor.putString("latitude", location.getLatitude() + "");
                     editor.apply();
                     editor.commit();
+                    Log.d("Location Saved","Saved");
                     requestAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
                     e.printStackTrace();

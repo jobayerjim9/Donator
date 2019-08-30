@@ -140,7 +140,11 @@ public class EditProfileFragment extends Fragment implements DatePickerDialog.On
             Toast.makeText(getContext(), "Name Couldn't Be Empty", Toast.LENGTH_LONG).show();
         } else if (privacy == null) {
             Toast.makeText(getContext(), "Please Select A Privacy", Toast.LENGTH_LONG).show();
-        } else {
+        } else if (bloodGroup.contains("Select A"))
+        {
+            Toast.makeText(getContext(), "Please Select Your Blood Group", Toast.LENGTH_LONG).show();
+        }
+        else {
             ProgressDialog progressDialog = new ProgressDialog(getContext());
             progressDialog.setCancelable(true);
             progressDialog.setMessage("Updating Your Profile!");
@@ -153,9 +157,11 @@ public class EditProfileFragment extends Fragment implements DatePickerDialog.On
                     Log.d("ProfileUpdated", task.toString());
                     progressDialog.dismiss();
                     if (task.isSuccessful()) {
-                        Toast.makeText(getContext(), "Your Profile Updated Successfully!", Toast.LENGTH_LONG).show();
+                        SuccessfulDialog successfulDialog=new SuccessfulDialog("Your Profile Updated Successfully!");
+                        successfulDialog.show(getChildFragmentManager(),"SuccessfulDialog");
                     } else {
-                        Toast.makeText(getContext(), task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        UnsuccessfulDialog unsuccessfulDialog=new UnsuccessfulDialog(task.getException().getLocalizedMessage());
+                        unsuccessfulDialog.show(getChildFragmentManager(),"UnsuccessfulDialog");
                     }
                 }
             }).addOnCanceledListener(new OnCanceledListener() {
@@ -181,7 +187,9 @@ public class EditProfileFragment extends Fragment implements DatePickerDialog.On
         spinnerEditProfile.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                bloodGroup = Objects.requireNonNull(adapter.getItem(position)).toString();
+                if(position!=0) {
+                    bloodGroup = Objects.requireNonNull(adapter.getItem(position)).toString();
+                }
             }
 
             @Override

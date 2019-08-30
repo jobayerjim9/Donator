@@ -188,7 +188,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:lottie_autoPlay="true"
-                        app:lottie_fileName="empty_emoji.json"
+                        app:lottie_fileName="no_history.json"
                         app:lottie_loop="true" />
 
                     <com.manojbhadane.QButton

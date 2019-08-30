@@ -2,6 +2,7 @@ package com.teamjhj.donator_247blood.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,7 +28,6 @@ public class LoadingScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_screen);
 
-
 //        ConstraintLayout loadingLayout = findViewById(R.id.loadingLayout);
 //        AnimationDrawable animationDrawable = (AnimationDrawable) loadingLayout.getBackground();
 //        animationDrawable.setEnterFadeDuration(1000);
@@ -52,9 +52,22 @@ public class LoadingScreenActivity extends AppCompatActivity {
                         if (configData != null) {
                             if (configData.getVersion().equals(version)) {
                                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                                    validate();
+                                    if (getIntent().getExtras() != null) {
+                                        Bundle bundle = getIntent().getExtras();
+                                        Log.e("FucckingBundle",bundle.toString());
+                                        String tag = bundle.getString("mobile");
+                                        Intent i=new Intent(LoadingScreenActivity.this,MainActivity.class);
+                                        i.putExtra("mobile",tag);
+                                        startActivity(i);
+                                        finish();
+                                    }
+                                    else {
+                                        Log.e("Failed To Get Jim","Try New Logic Fucking Dumb");
+                                        validate();
+                                    }
                                 } else {
-                                    startActivity(new Intent(LoadingScreenActivity.this, SignInActivity.class));
+                                    //startActivity(new Intent(LoadingScreenActivity.this, SignInActivity.class));
+                                    startActivity(new Intent(LoadingScreenActivity.this,AppIntoActivity.class));
                                     finish();
                                 }
                             } else {

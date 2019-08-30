@@ -17,6 +17,30 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/namePending"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_name_tag"
+            android:drawablePadding="2dp"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/datePending"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:drawableLeft="@drawable/ic_date"
+            android:drawablePadding="2dp"
+            android:textColor="@color/black" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/material_background" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,28 +62,5 @@
                 app:srcCompat="@drawable/ic_cross_mark" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/datePending"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:drawableLeft="@drawable/ic_date"
-            android:drawablePadding="2dp"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/namePending"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_name_tag"
-            android:drawablePadding="2dp"
-            android:textColor="@color/black" />
-
-        <View
-            android:id="@+id/divider2"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="4dp"
-            android:background="@color/material_background" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
