@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class com.teamjhj.donator_247blood.DataModel.** { *; }
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+-keepnames class org.jsoup.nodes.Entities
+-keepattributes SourceFile, LineNumberTable
+-keepattributes LocalVariableTable, LocalVariableTypeTable

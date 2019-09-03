@@ -37,6 +37,7 @@
 
     <string name="facebook_login_protocol_scheme" translatable="false">fb697002240771426</string>
     <string name="feed">Blood Feed</string>
+    <string name="place_api_key">AIzaSyAjt-nsOSRT-l8UYDNAe7zzr7molPPCb4Y</string>
     <string-array name="bloodGroups">
         <item>Select A Blood Group</item>
         <item>A+ (A Positive)</item>

@@ -46,12 +46,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
-    RecyclerView chatRecycler;
-    MessagingAdapter messagingAdapter;
-    ArrayList<ChatData> chatData = new ArrayList<>();
-    String message, placeHolder = " ";
-    TextView statusChat, no_chat_Label;
-    LottieAnimationView no_chat;
+    private RecyclerView chatRecycler;
+    private MessagingAdapter messagingAdapter;
+    private ArrayList<ChatData> chatData = new ArrayList<>();
+    private String message, placeHolder = " ";
+    private TextView statusChat, no_chat_Label;
+    private LottieAnimationView no_chat;
     private ShimmerFrameLayout chatShimmer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

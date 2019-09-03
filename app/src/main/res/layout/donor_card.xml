@@ -27,7 +27,6 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/roboto_bold"
                 android:gravity="center_vertical"
-                android:text="123456789012345"
                 android:textColor="@color/black" />
 
             <ImageView

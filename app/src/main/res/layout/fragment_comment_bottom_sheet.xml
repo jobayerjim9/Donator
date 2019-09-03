@@ -6,13 +6,15 @@
     android:layout_height="match_parent"
     android:background="#ADC5C3C3"
     android:nestedScrollingEnabled="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="32dp">
 
     <LinearLayout
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -49,6 +51,12 @@
 
         </androidx.cardview.widget.CardView>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/commentsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:nestedScrollingEnabled="true" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/no_comment"
@@ -73,13 +81,6 @@
             android:textSize="30sp"
             android:visibility="gone"
             app:layout_constraintVertical_bias="0.0" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/commentsRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:nestedScrollingEnabled="true" />
 
         <LinearLayout
             android:layout_width="match_parent"

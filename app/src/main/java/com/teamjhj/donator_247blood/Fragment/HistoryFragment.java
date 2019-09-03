@@ -2,6 +2,7 @@ package com.teamjhj.donator_247blood.Fragment;
 
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -185,9 +186,16 @@ public class HistoryFragment extends Fragment implements DatePickerDialog.OnDate
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getContext(), databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, databaseError.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+private Context context;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context=context;
     }
 
     private void validate() {

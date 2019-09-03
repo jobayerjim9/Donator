@@ -100,7 +100,7 @@ public class AppIntoActivity extends AppIntro {
         addSlide(AppIntroFragment.newInstance(sliderPage11));
 
         SliderPage sliderPage12=new SliderPage();
-        sliderPage12.setImageDrawable(R.drawable.app_intro_10);
+        sliderPage12.setImageDrawable(R.drawable.app_intro_11);
         sliderPage12.setBgColor(Color.parseColor("#EF5350"));
         sliderPage12.setTitle("Update Your History");
         sliderPage12.setDescription("If Someone Confirm You As A Donor!\nYou Will Get A Popup Notification! Accepting The Request Will Update Your Last Donation Date!");

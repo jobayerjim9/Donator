@@ -83,7 +83,8 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone"
+                android:inputType="numberSigned"
+                android:maxLength="11"
                 android:shadowColor="@color/white"
                 android:textColor="@color/white"
                 android:textColorHighlight="@color/white"
@@ -113,6 +114,7 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="numberSigned"
                 android:shadowColor="@color/white"
                 android:textColor="@color/white"
                 android:textColorHighlight="@color/white"

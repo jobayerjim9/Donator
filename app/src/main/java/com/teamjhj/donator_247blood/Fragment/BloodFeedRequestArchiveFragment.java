@@ -47,6 +47,7 @@ public class BloodFeedRequestArchiveFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_blood_feed_request_archive, container, false);
         RecyclerView bloodFeedArchiveRecycler = v.findViewById(R.id.bloodFeedArchiveRecycler);
         feedArchiveShimmer = v.findViewById(R.id.feedArchiveShimmer);
+        no_archive_blood_feed = v.findViewById(R.id.no_archive_blood_feed);
         nothingFoundFeedArchive = v.findViewById(R.id.nothingFoundFeedArchive);
         feedArchiveShimmer.startShimmer();
         bloodFeedArchiveRecycler.setLayoutManager(new LinearLayoutManager(getContext()));

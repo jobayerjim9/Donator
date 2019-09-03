@@ -510,7 +510,7 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
     }
 
     private void initPlace() {
-        Places.initialize(Objects.requireNonNull(getContext()), "AIzaSyAjt-nsOSRT-l8UYDNAe7zzr7molPPCb4Y");
+        Places.initialize(Objects.requireNonNull(getContext()),getString(R.string.place_api_key));
         placesClient = Places.createClient(getContext());
         locationListener = new LocationListener() {
             @Override

@@ -21,7 +21,7 @@ import com.teamjhj.donator_247blood.R;
 import java.util.Objects;
 
 public class LoadingScreenActivity extends AppCompatActivity {
-    private String version = "1.0.6";
+    private String version = "1.3.1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +71,15 @@ public class LoadingScreenActivity extends AppCompatActivity {
                                     finish();
                                 }
                             } else {
-                                NewUpdateAvailableDialog updateAvailableDialog = new NewUpdateAvailableDialog();
-                                updateAvailableDialog.setCancelable(false);
-                                updateAvailableDialog.show(getSupportFragmentManager(), "update");
+                                try {
+                                    NewUpdateAvailableDialog updateAvailableDialog = new NewUpdateAvailableDialog();
+                                    updateAvailableDialog.setCancelable(false);
+                                    updateAvailableDialog.show(getSupportFragmentManager(), "update");
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
                             }
 
                         }

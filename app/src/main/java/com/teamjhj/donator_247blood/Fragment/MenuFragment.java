@@ -70,7 +70,6 @@ public class MenuFragment extends Fragment {
 
             }
         });
-        name_menu.setText(AppData.getUserProfile().getName());
         emergencyRequestMenu = v.findViewById(R.id.emergencyRequestMenu);
         notificationMenu = v.findViewById(R.id.notificationMenu);
         postsMenu = v.findViewById(R.id.postsMenu);

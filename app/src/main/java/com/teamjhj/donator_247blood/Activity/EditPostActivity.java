@@ -48,9 +48,9 @@ import java.util.Objects;
 
 public class EditPostActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     private final int AUTOCOMPLETE_REQUEST_CODE = 1;
-    String add;
-    DatabaseReference post;
-    NonEmergencyInfo nonEmergencyInfo;
+    private String add;
+    private DatabaseReference post;
+    private NonEmergencyInfo nonEmergencyInfo;
     private Spinner spinnerProfile;
     private String bloodGroup;
     private Button dateProfile, timeProfile, locationProfile, saveButtonProfile;

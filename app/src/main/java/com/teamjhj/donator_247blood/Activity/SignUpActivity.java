@@ -123,7 +123,11 @@ public class SignUpActivity extends AppCompatActivity implements DatePickerDialo
                         nameInputSignUp.setError("Please Enter Your Name");
                     } else if (privacy == null) {
                         Toast.makeText(SignUpActivity.this, "Please Select Your Privacy", Toast.LENGTH_LONG).show();
-                    } else {
+                    } else if(bloodGroup==null)
+                    {
+                        Toast.makeText(SignUpActivity.this, "Please Select Your Blood Group", Toast.LENGTH_LONG).show();
+                    }
+                    else {
                         nameInputSignUp.setErrorEnabled(false);
                         nameInput = nameInputSignUp.getEditText().getText().toString();
                         linearLayout1.setVisibility(View.GONE);
@@ -181,8 +185,54 @@ public class SignUpActivity extends AppCompatActivity implements DatePickerDialo
         if (nameInput.isEmpty() || y == 0 || bloodGroup.isEmpty() || ageInput.isEmpty()) {
             Toast.makeText(this, "Please Check Your Information Again!", Toast.LENGTH_LONG).show();
         } else {
-            userProfile = new UserProfile(nameInput, FirebaseAuth.getInstance().getUid(), bloodGroup, d, m, y, AppData.getMobileNumber(), privacy);
-            new UploadData().execute();
+            try {
+                progressDialog = new ProgressDialog(SignUpActivity.this);
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage("Creating Your Profile");
+                progressDialog.show();
+                userProfile = new UserProfile(nameInput, FirebaseAuth.getInstance().getUid(), bloodGroup, d, m, y, AppData.getMobileNumber(), privacy);
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("UserProfile").child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+                databaseReference.setValue(userProfile).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            if (y != -1) {
+                                DatabaseReference history = FirebaseDatabase.getInstance().getReference("UserProfile").child(FirebaseAuth.getInstance().getUid()).child("DonationHistory");
+                                DonationHistory donationHistory = new DonationHistory("Not Specified!", d, m, y);
+                                history.push().setValue(donationHistory).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(SignUpActivity.this, "Sign Up Successfully Completed", Toast.LENGTH_LONG).show();
+                                            progressDialog.dismiss();
+                                            startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                                            finish();
+
+                                        } else {
+                                            Toast.makeText(SignUpActivity.this, "Something Is Wrong! Check Internet Or Contact Support!", Toast.LENGTH_LONG).show();
+                                            progressDialog.dismiss();
+                                        }
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(SignUpActivity.this, "Sign Up Successfully Completed", Toast.LENGTH_LONG).show();
+                                progressDialog.dismiss();
+                                startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                                finish();
+                            }
+
+
+                        } else {
+                            Toast.makeText(SignUpActivity.this, "Something Is Wrong! Check Internet Or Contact Support!", Toast.LENGTH_LONG).show();
+                            progressDialog.dismiss();
+                        }
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
 
         }
 
@@ -205,7 +255,9 @@ public class SignUpActivity extends AppCompatActivity implements DatePickerDialo
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                bloodGroup = Objects.requireNonNull(adapter.getItem(position)).toString();
+                if(position!=0) {
+                    bloodGroup = Objects.requireNonNull(adapter.getItem(position)).toString();
+                }
             }
 
             @Override
@@ -215,73 +267,5 @@ public class SignUpActivity extends AppCompatActivity implements DatePickerDialo
         });
     }
 
-    protected class UploadData extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressDialog = new ProgressDialog(SignUpActivity.this);
-                    progressDialog.setCancelable(false);
-                    progressDialog.setMessage("Creating Your Profile");
-                    progressDialog.show();
-                }
-            });
-        }
 
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("UserProfile").child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
-            databaseReference.setValue(userProfile).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        if (y != -1) {
-                            DatabaseReference history = FirebaseDatabase.getInstance().getReference("UserProfile").child(FirebaseAuth.getInstance().getUid()).child("DonationHistory");
-                            DonationHistory donationHistory = new DonationHistory("Not Specified!", d, m, y);
-                            history.push().setValue(donationHistory).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(SignUpActivity.this, "Sign Up Successfully Completed", Toast.LENGTH_LONG).show();
-                                                progressDialog.dismiss();
-                                                startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                                                finish();
-                                            }
-                                        });
-                                    } else {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(SignUpActivity.this, "Something Is Wrong! Check Internet Or Contact Support!", Toast.LENGTH_LONG).show();
-                                                progressDialog.dismiss();
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        }
-
-
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(SignUpActivity.this, "Something Is Wrong! Check Internet Or Contact Support!", Toast.LENGTH_LONG).show();
-                                progressDialog.dismiss();
-                            }
-                        });
-                    }
-                }
-            });
-
-            return null;
-        }
-
-    }
 }

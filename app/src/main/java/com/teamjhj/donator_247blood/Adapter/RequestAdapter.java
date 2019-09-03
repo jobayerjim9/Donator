@@ -63,6 +63,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     private ArrayList<NonEmergencyInfo> nonEmergencyInfos;
     FragmentManager manager;
     int distanceFromUser = -1;
+    double longitude,latitude;
     public RequestAdapter(Context ctx, ArrayList<NonEmergencyInfo> nonEmergencyInfos) {
         this.ctx = ctx;
         this.nonEmergencyInfos = nonEmergencyInfos;
@@ -139,7 +140,25 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
 
             }
         });
-        holder.accept_btn_blood_feed.setSwipeDistance((float) 0.3);
+        try {
+            //  int distanceFromUser=Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(ctx).getString("longitude", "defaultStringIfNothingFound"));
+            SharedPreferences pref = ((AppCompatActivity) ctx).getPreferences(Context.MODE_PRIVATE);
+            longitude = Double.parseDouble(pref.getString("longitude", null));
+            latitude = Double.parseDouble(pref.getString("latitude", null));
+            Log.e("SharedPref", longitude + "");
+            distanceFromUser = (int) distance(latitude, longitude, nonEmergencyInfos.get(position).getLat(), nonEmergencyInfos.get(position).getLongt());
+
+            holder.bloodFeedDistanceBar.setProgress(distanceFromUser);
+            String placeHolder = "Within " + distanceFromUser + " K.m";
+            holder.bloodFeedDistanceText.setText(placeHolder);
+            holder.bloodFeedDistanceBar.getProgressDrawable().setColorFilter(
+                    Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+        } catch (Exception e) {
+            holder.bloodFeedDistanceBar.setVisibility(View.GONE);
+            holder.bloodFeedDistanceText.setVisibility(View.GONE);
+            e.printStackTrace();
+        }
+        holder.accept_btn_blood_feed.setSwipeDistance((float) 0.2);
         holder.accept_btn_blood_feed.setOnSwipeListener(new ProSwipeButton.OnSwipeListener() {
 
 
@@ -161,6 +180,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                         nonEmergencyLive.child("accepted").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
+                                                distanceFromUser = (int) distance(latitude, longitude, nonEmergencyInfos.get(position).getLat(), nonEmergencyInfos.get(position).getLongt());
+                                                Log.d("DistanceFromUser",distanceFromUser+"");
                                                 nonEmergencyLive.child("radius").setValue(distanceFromUser).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
@@ -203,24 +224,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                 }, 1000);
             }
         });
-        try {
-            //  int distanceFromUser=Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(ctx).getString("longitude", "defaultStringIfNothingFound"));
-            SharedPreferences pref = ((AppCompatActivity) ctx).getPreferences(Context.MODE_PRIVATE);
-            double longitude = Double.parseDouble(pref.getString("longitude", null));
-            double latitude = Double.parseDouble(pref.getString("latitude", null));
-            Log.e("SharedPref", longitude + "");
-            distanceFromUser = (int) distance(latitude, longitude, nonEmergencyInfos.get(position).getLat(), nonEmergencyInfos.get(position).getLongt());
 
-            holder.bloodFeedDistanceBar.setProgress(distanceFromUser);
-            String placeHolder = "Within " + distanceFromUser + " K.m";
-            holder.bloodFeedDistanceText.setText(placeHolder);
-            holder.bloodFeedDistanceBar.getProgressDrawable().setColorFilter(
-                    Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
-        } catch (Exception e) {
-            holder.bloodFeedDistanceBar.setVisibility(View.GONE);
-            holder.bloodFeedDistanceText.setVisibility(View.GONE);
-            e.printStackTrace();
-        }
         holder.likeButton.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {

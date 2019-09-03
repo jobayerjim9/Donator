@@ -16,7 +16,13 @@
         <item name="colorAccent">@color/white</item>
         <item name="colorError">@color/white</item>
     </style>
-
+    <style name="AppThemeSignUp" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/material_background</item>
+        <item name="colorAccent">@color/black</item>
+        <item name="colorError">@color/black</item>
+    </style>
     <style name="AlertDialogMobilePopup" parent="@android:style/Theme.Dialog">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>

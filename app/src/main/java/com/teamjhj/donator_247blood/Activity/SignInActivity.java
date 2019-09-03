@@ -217,7 +217,6 @@ public class SignInActivity extends AppCompatActivity {
             mobileNumber.setError("Please Enter Valid Phone Number(11 Digit)");
         } else {
             submitButton.setVisibility(View.VISIBLE);
-
             mobileNumberValue = "+88" + mobileNumberValue;
             AppData.setMobileNumber(mobileNumberValue);
             loading_sign_in.setVisibility(View.VISIBLE);
@@ -239,10 +238,16 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void verifyVerificationCode(String otp) {
-        //creating the credential
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp);
-        //signing the user
-        signInWithPhoneAuthCredential(credential);
+        try {
+            //creating the credential
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp);
+            //signing the user
+            signInWithPhoneAuthCredential(credential);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
@@ -337,7 +342,7 @@ public class SignInActivity extends AppCompatActivity {
                         AppData.setMobileNumber(response.getPhoneNumber());
                         startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
                     } else {
-                        Toast.makeText(SignInActivity.this, "Mobile Number Not Found On Your Facebook Account!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignInActivity.this, "Mobile Number Not Found On Your Account!", Toast.LENGTH_LONG).show();
                         DialogFragment phoneNumberPopupDialog = new PhoneNumberPopupDialog();
                         phoneNumberPopupDialog.show(getSupportFragmentManager(), "phoneNumberPopupDialog");
                     }

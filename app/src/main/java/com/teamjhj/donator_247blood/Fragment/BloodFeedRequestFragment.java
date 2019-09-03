@@ -111,13 +111,10 @@ public class BloodFeedRequestFragment extends DialogFragment {
                                 }
                             });
                         }
-                    } else {
-
-                        dismiss();
-                        optInText.setText("No Opt In Donors");
                     }
 
                 }
+
 
 
             }
@@ -127,7 +124,27 @@ public class BloodFeedRequestFragment extends DialogFragment {
 
             }
         });
+        DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("NonEmergencyRequests").child(nonEmergencyInfo.getYear() + "").child(nonEmergencyInfo.getMonth() + "").child(nonEmergencyInfo.getDate() + "").child(nonEmergencyInfo.getKey());
+        postRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                NonEmergencyInfo nonEmergencyInfo=dataSnapshot.getValue(NonEmergencyInfo.class);
+                if(nonEmergencyInfo!=null)
+                {
+                    if(nonEmergencyInfo.isClosed())
+                    {
+                        Toast.makeText(ctx,"Post Moved To Archive",Toast.LENGTH_LONG).show();
+                        dismiss();
 
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         builder.setView(v);
         return builder.create();

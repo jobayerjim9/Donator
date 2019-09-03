@@ -467,7 +467,8 @@ public class BloodFeedFragment extends Fragment {
     }
 
     private void initPlace() {
-        Places.initialize(Objects.requireNonNull(getContext()), "AIzaSyAjt-nsOSRT-l8UYDNAe7zzr7molPPCb4Y");
+        Places.initialize(Objects.requireNonNull(getContext()),getString(R.string.place_api_key));
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -501,7 +502,13 @@ public class BloodFeedFragment extends Fragment {
 
             @Override
             public void onProviderDisabled(String provider) {
-                Toast.makeText(getContext(), "Please Enable Location", Toast.LENGTH_LONG).show();
+                try {
+                    Toast.makeText(context, "Please Enable Location", Toast.LENGTH_LONG).show();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         };
         locationManager = (LocationManager) Objects.requireNonNull(getActivity()).getSystemService(Context.LOCATION_SERVICE);
@@ -510,5 +517,12 @@ public class BloodFeedFragment extends Fragment {
         } else {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 600, 50, locationListener);
         }
+    }
+    private Context context;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context=context;
     }
 }
