@@ -1,5 +1,7 @@
 package com.teamjhj.donator_247blood.DataModel;
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 
 public class AppData {
@@ -12,8 +14,17 @@ public class AppData {
     private static String postMessage;
     private static ArrayList<NonEmergencyInfo> nonEmergencyInfos;
     private static NonEmergencyInfo editPostInfo;
+    private static Bitmap profilePic;
 
     public AppData() {
+    }
+
+    public static Bitmap getProfilePic() {
+        return profilePic;
+    }
+
+    public static void setProfilePic(Bitmap profilePic) {
+        AppData.profilePic = profilePic;
     }
 
     public static NonEmergencyInfo getEditPostInfo() {

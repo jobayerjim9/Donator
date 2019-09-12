@@ -20,14 +20,22 @@ import com.teamjhj.donator_247blood.R;
 
 import java.util.Objects;
 
+import am.appwise.components.ni.NoInternetDialog;
+
 public class LoadingScreenActivity extends AppCompatActivity {
-    private String version = "1.3.1";
+    private String version = "1.4";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading_screen);
-
+        try {
+            NoInternetDialog noInternetDialog = new NoInternetDialog.Builder(this).setButtonColor(R.color.material_background).build();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 //        ConstraintLayout loadingLayout = findViewById(R.id.loadingLayout);
 //        AnimationDrawable animationDrawable = (AnimationDrawable) loadingLayout.getBackground();
 //        animationDrawable.setEnterFadeDuration(1000);
@@ -121,4 +129,6 @@ public class LoadingScreenActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

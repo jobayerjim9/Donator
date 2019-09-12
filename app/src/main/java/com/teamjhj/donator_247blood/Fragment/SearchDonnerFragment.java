@@ -20,6 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -44,14 +47,18 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.astritveliu.boom.Boom;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -67,11 +74,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 import com.teamjhj.donator_247blood.Activity.AboutUsActivity;
 import com.teamjhj.donator_247blood.Activity.AppIntoActivity;
 import com.teamjhj.donator_247blood.Activity.SignInActivity;
 import com.teamjhj.donator_247blood.DataModel.AppData;
 import com.teamjhj.donator_247blood.DataModel.NonEmergencyInfo;
+import com.teamjhj.donator_247blood.DataModel.UserProfile;
 import com.teamjhj.donator_247blood.R;
 
 import java.io.IOException;
@@ -103,11 +114,11 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
     private static CardView searchDonorMessage, searchCardView;
     private final int AUTOCOMPLETE_REQUEST_CODE = 1;
     String add;
-    AutocompleteSupportFragment place_autocomplete_fragment;
+    //AutocompleteSupportFragment place_autocomplete_fragment;
     //private TextView locationLabel;
     private Button pickupLocation, searchDonner;
-    private LocationListener locationListener;
-    private LocationManager locationManager;
+   // private LocationListener locationListener;
+   // private LocationManager locationManager;
     private List<Address> addresses;
     private LatLng pickedLocation;
     private int pos;
@@ -123,9 +134,10 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
     private PlacesClient placesClient;
     private List<Place.Field> fields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ADDRESS);
     private ProgressDialog progressDialog;
-    private LottieAnimationView blood_transfusion;
+    //private LottieAnimationView blood_transfusion;
     private Button datePickerSearchDonor;
     private EditText bagsSearchDonor;
+    private static TextView welcomeText;
     int day,month,year;
     public SearchDonnerFragment() {
         day = 0;
@@ -141,6 +153,7 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_search_donner, container, false);
+        TextView headingYoutube=view.findViewById(R.id.headingYoutube);
         add = null;
         initPlace();
         fm = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
@@ -149,19 +162,25 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
         }
         //locationLabellocationLabel = view.findViewById(R.id.locationLabel);
         pickupLocation = view.findViewById(R.id.pickLocation);
+        new Boom(pickupLocation);
+        welcomeText = view.findViewById(R.id.welcomeText);
+        new Boom(welcomeText);
         datePickerSearchDonor = view.findViewById(R.id.datePickerSearchDonor);
+        new Boom(datePickerSearchDonor);
         radioGroup = view.findViewById(R.id.radioGroup);
         reasonInput = view.findViewById(R.id.reasonInput);
         bagsSearchDonor = view.findViewById(R.id.bagsSearchDonor);
         expMenu = view.findViewById(R.id.expMenu);
+
         searchDonorLabel = view.findViewById(R.id.searchDonorLabel);
         searchDonnerScrollView = view.findViewById(R.id.searchDonnerScrollView);
         logoImage = view.findViewById(R.id.logoImage);
-        blood_transfusion = view.findViewById(R.id.blood_transfusion);
+       // blood_transfusion = view.findViewById(R.id.blood_transfusion);
         searchCardView = view.findViewById(R.id.searchCardView);
         searchDonorMessage = view.findViewById(R.id.searchDonorMessage);
         searchDonnerFrameLayout = view.findViewById(R.id.searchDonnerFrameLayout);
         searchingAnimationFragment = view.findViewById(R.id.searchingAnimationFragment);
+
         pickupLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,6 +232,9 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
             }
         });
         Spinner selectBloodGroup = view.findViewById(R.id.selectBloodGroup);
+        YouTubePlayerView youTubePlayerView = view.findViewById(R.id.youtube_player_view);
+        getLifecycle().addObserver(youTubePlayerView);
+//        new Boom(selectBloodGroup);
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.bloodGroups, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         selectBloodGroup.setAdapter(adapter);
@@ -236,7 +258,9 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
                 searchDonnerScrollView.setVisibility(View.VISIBLE);
                 searchDonorLabel.setVisibility(View.VISIBLE);
                 searchDonorMessage.setVisibility(View.GONE);
-                blood_transfusion.setVisibility(View.GONE);
+                headingYoutube.setVisibility(View.GONE);
+                youTubePlayerView.setVisibility(View.GONE);
+                //blood_transfusion.setVisibility(View.GONE);
 
                 if (i == R.id.nonEmmargencyButton) {
                     datePickerSearchDonor.setVisibility(View.VISIBLE);
@@ -267,6 +291,7 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
             }
         });
         searchDonner = view.findViewById(R.id.searchDonner);
+        new Boom(searchDonner);
         searchDonner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -310,6 +335,7 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
             expMenu.setVisibility(View.VISIBLE);
             searchDonorLabel.setVisibility(View.VISIBLE);
             logoImage.setVisibility(View.VISIBLE);
+            welcomeText.setVisibility(View.VISIBLE);
         }
 //        else if (n == 2) {
 //            NonEmergencyInfoFragment fragment = (NonEmergencyInfoFragment) fm.findFragmentById(R.id.searchDonnerFrameLayout);
@@ -362,6 +388,7 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
                 expMenu.setVisibility(View.GONE);
                 searchDonorLabel.setVisibility(View.GONE);
                 logoImage.setVisibility(View.GONE);
+                welcomeText.setVisibility(View.GONE);
                 searchNearbyDonner();
             } else {
                 String bags=bagsSearchDonor.getText().toString();
@@ -416,7 +443,7 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
 
     }
     private void searchNearbyDonner() {
-
+        //radius=0;
         final DatabaseReference availableDonner = FirebaseDatabase.getInstance().getReference("AvailableDonner");
         GeoFire geoFire = new GeoFire(availableDonner);
         GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(pickedLocation.latitude, pickedLocation.longitude), radius);
@@ -429,9 +456,10 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         try {
+
                             String blood = dataSnapshot.getValue(String.class);
-                            Log.e("BloodGroupSearchDonor", blood);
                             if (blood.contains(selectedBloodGroup)) {
+                                Log.d("UserRadius",radius+" "+key);
                                 if (!donners.toString().contains(key)) {
                                     if (!Objects.equals(FirebaseAuth.getInstance().getUid(), key)) {
                                         donners.add(key);
@@ -467,6 +495,7 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
                 if (donners.size() <= 40 && radius <= 25) {
                     radius++;
                     searchNearbyDonner();
+
                 } else {
                     AppData.setDonners(donners);
                     AppData.setRadiusList(radiusList);
@@ -512,10 +541,60 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
     private void initPlace() {
         Places.initialize(Objects.requireNonNull(getContext()),getString(R.string.place_api_key));
         placesClient = Places.createClient(getContext());
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                try {
+//        locationListener = new LocationListener() {
+//            @Override
+//            public void onLocationChanged(Location location) {
+//                try {
+//                    Geocoder geocoder = new Geocoder(getContext());
+//                    pickedLocation = new LatLng(location.getLatitude(), location.getLongitude());
+//                    try {
+//                        addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 10);
+//                        pickupLocation.setText(addresses.get(0).getAddressLine(0));
+//                        add = addresses.get(0).getAddressLine(0);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onStatusChanged(String provider, int status, Bundle extras) {
+//
+//            }
+//
+//            @Override
+//            public void onProviderEnabled(String provider) {
+//
+//            }
+//
+//            @Override
+//            public void onProviderDisabled(String provider) {
+//                try {
+//                    if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                        ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+//                    } else {
+//                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 6000, 100, locationListener);
+//                    }
+//                    Toast.makeText(getContext(), "Please Enable Location", Toast.LENGTH_LONG).show();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//        locationManager = (LocationManager) Objects.requireNonNull(getActivity()).getSystemService(Context.LOCATION_SERVICE);
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
+            fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(getContext());
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if(location!=null)
+                    {
+                        try {
                     Geocoder geocoder = new Geocoder(getContext());
                     pickedLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     try {
@@ -528,44 +607,15 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                try {
-                    if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                    } else {
-                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 6000, 100, locationListener);
                     }
-                    Toast.makeText(getContext(), "Please Enable Location", Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }
-        };
-        locationManager = (LocationManager) Objects.requireNonNull(getActivity()).getSystemService(Context.LOCATION_SERVICE);
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        } else {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 6000, 100, locationListener);
+            });
         }
 
 
 // Start the autocomplete intent.
     }
-
+private FusedLocationProviderClient fusedLocationProviderClient;
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -615,7 +665,28 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60, 30, locationListener);
+                fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(getContext());
+                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if(location!=null)
+                        {
+                            try {
+                                Geocoder geocoder = new Geocoder(getContext());
+                                pickedLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                                try {
+                                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 10);
+                                    pickupLocation.setText(addresses.get(0).getAddressLine(0));
+                                    add = addresses.get(0).getAddressLine(0);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
             } else {
                 Toast.makeText(getContext(), "Please Allow Location Permission", Toast.LENGTH_LONG).show();
             }

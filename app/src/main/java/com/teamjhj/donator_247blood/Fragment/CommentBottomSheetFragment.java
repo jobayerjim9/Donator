@@ -2,12 +2,14 @@ package com.teamjhj.donator_247blood.Fragment;
 
 import android.app.Dialog;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -36,7 +39,7 @@ import com.teamjhj.donator_247blood.DataModel.NotificationData;
 import com.teamjhj.donator_247blood.DataModel.NotificationSender;
 import com.teamjhj.donator_247blood.DataModel.UserProfile;
 import com.teamjhj.donator_247blood.R;
-import com.teamjhj.donator_247blood.RestApi.ApiClient;
+import com.teamjhj.donator_247blood.RestApi.NotificationAPI;
 import com.teamjhj.donator_247blood.RestApi.ApiInterface;
 
 import java.util.ArrayList;
@@ -58,13 +61,12 @@ public class CommentBottomSheetFragment extends BottomSheetDialogFragment {
     private EditText commentsText;
     private TextView no_comment_label;
     private LottieAnimationView no_comment;
+    private AppBarLayout app_bar_layout;
     public CommentBottomSheetFragment(NonEmergencyInfo nonEmergencyInfo) {
         this.nonEmergencyInfo = nonEmergencyInfo;
     }
 
-    public static int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
-    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,12 +78,38 @@ public class CommentBottomSheetFragment extends BottomSheetDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-        View view = View.inflate(getContext(), R.layout.fragment_comment_bottom_sheet, null);
-        LinearLayout linearLayout = view.findViewById(R.id.root);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linearLayout.getLayoutParams();
-        params.height = getScreenHeight();
-        linearLayout.setLayoutParams(params);
+        View view = View.inflate(getContext(), R.layout.cooment_bottom_sheet, null);
+        dialog.setContentView(view);
+        mBehavior = BottomSheetBehavior.from((View) view.getParent());
+        mBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
+        app_bar_layout=view.findViewById(R.id.app_bar_layout);
+        hideView(app_bar_layout);
+        mBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (BottomSheetBehavior.STATE_EXPANDED == newState) {
+                    showView(app_bar_layout, getActionBarSize());
 
+                }
+                if (BottomSheetBehavior.STATE_COLLAPSED == newState) {
+                    hideView(app_bar_layout);
+                }
+
+                if (BottomSheetBehavior.STATE_HIDDEN == newState) {
+                    dismiss();
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+//        LinearLayout linearLayout = view.findViewById(R.id.root);
+//        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linearLayout.getLayoutParams();
+//        params.height = getScreenHeight();
+//        linearLayout.setLayoutParams(params);
+//
         databaseReference = FirebaseDatabase.getInstance().getReference("NonEmergencyRequests").child(nonEmergencyInfo.getYear() + "").child(nonEmergencyInfo.getMonth() + "").child(nonEmergencyInfo.getDate() + "").child(nonEmergencyInfo.getKey()).child("comments");
         commentsText = view.findViewById(R.id.commentsText);
         no_comment_label = view.findViewById(R.id.no_comment_label);
@@ -89,10 +117,11 @@ public class CommentBottomSheetFragment extends BottomSheetDialogFragment {
         commentsText = view.findViewById(R.id.commentsText);
         commentsDataList = new ArrayList<>();
         commentsRecycler = view.findViewById(R.id.commentsRecycler);
+        commentsRecycler.setHasFixedSize(true);
         commentsRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         commentsAdapter = new CommentsAdapter(getContext(), commentsDataList);
         commentsRecycler.setAdapter(commentsAdapter);
-        ImageButton sendButtonComments = view.findViewById(R.id.sendButtonComments);
+        ImageView sendButtonComments = view.findViewById(R.id.sendButtonComments);
         sendButtonComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,8 +136,7 @@ public class CommentBottomSheetFragment extends BottomSheetDialogFragment {
             }
         });
         getCommentsData();
-        dialog.setContentView(view);
-        mBehavior = BottomSheetBehavior.from((View) view.getParent());
+
         return dialog;
     }
 
@@ -146,6 +174,7 @@ public class CommentBottomSheetFragment extends BottomSheetDialogFragment {
                 commentsDataList.clear();
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     CommentsData commentsData = dataSnapshot1.getValue(CommentsData.class);
+
                     Log.d("Comments", commentsData.getName());
                     commentsDataList.add(commentsData);
                     commentsAdapter.notifyDataSetChanged();
@@ -169,16 +198,9 @@ public class CommentBottomSheetFragment extends BottomSheetDialogFragment {
 
 
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-    }
-
     private void sendNotification() {
         try {
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface apiInterface = NotificationAPI.getClient().create(ApiInterface.class);
             DatabaseReference profile = FirebaseDatabase.getInstance().getReference("UserProfile").child(nonEmergencyInfo.getUid());
             profile.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -233,5 +255,28 @@ public class CommentBottomSheetFragment extends BottomSheetDialogFragment {
             e.printStackTrace();
         }
 
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    private void hideView(View view) {
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.height = 0;
+        view.setLayoutParams(params);
+    }
+
+    private void showView(View view, int size) {
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.height = size;
+        view.setLayoutParams(params);
+    }
+
+    private int getActionBarSize() {
+        final TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(new int[]{android.R.attr.actionBarSize});
+        int size = (int) styledAttributes.getDimension(0, 0);
+        return size;
     }
 }

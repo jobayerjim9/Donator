@@ -16,12 +16,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 import com.teamjhj.donator_247blood.Activity.ChatActivity;
 import com.teamjhj.donator_247blood.DataModel.AppData;
 import com.teamjhj.donator_247blood.DataModel.UserProfile;
+import com.teamjhj.donator_247blood.Fragment.ViewProfileBottomSheet;
 import com.teamjhj.donator_247blood.R;
 
 import java.io.IOException;
@@ -34,11 +41,12 @@ public class DonnerListAdapter extends RecyclerView.Adapter<DonnerListAdapter.Do
     private ArrayList<UserProfile> donnersData;
     private DatabaseReference location;
     private ArrayList<String> keys;
-
+    private FragmentManager manager;
     public DonnerListAdapter(Context c, ArrayList<UserProfile> data) {
         ctx = c;
         donnersData = data;
         keys = AppData.getDonners();
+        manager = ((AppCompatActivity) ctx).getSupportFragmentManager();
     }
     @Override
     public int getItemViewType(int position) {
@@ -67,6 +75,21 @@ public class DonnerListAdapter extends RecyclerView.Adapter<DonnerListAdapter.Do
                     i.putExtra("Name", donnersData.get(position).getName());
                     i.putExtra("uid", donnersData.get(position).getUid());
                     ctx.startActivity(i);
+                }
+            });
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageReference = storage.getReference().child("UserProfilePicture").child(donnersData.get(position).getUid());
+            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.get().load(uri).placeholder(R.drawable.com_facebook_profile_picture_blank_square).into(holder.donorProfilePic);
+                }
+            });
+            holder.donorProfilePic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ViewProfileBottomSheet viewProfileBottomSheet=new ViewProfileBottomSheet(donnersData.get(position).getUid());
+                    viewProfileBottomSheet.show(manager,"ViewProfile");
                 }
             });
 //            holder.bloodGroupOfDonner.setText(donnersData.get(position).getBloodGroup());
@@ -156,7 +179,7 @@ public class DonnerListAdapter extends RecyclerView.Adapter<DonnerListAdapter.Do
 
     class DonnerListViewHolder extends RecyclerView.ViewHolder {
         TextView nameOfDonner, distanceText;
-        ImageView callButton, messageDonor;
+        ImageView callButton, messageDonor,donorProfilePic;
         ProgressBar distanceBar;
 
         public DonnerListViewHolder(@NonNull View itemView) {
@@ -166,6 +189,7 @@ public class DonnerListAdapter extends RecyclerView.Adapter<DonnerListAdapter.Do
             callButton = itemView.findViewById(R.id.callButton);
             distanceBar = itemView.findViewById(R.id.distanceBar);
             messageDonor = itemView.findViewById(R.id.messageDonor);
+            donorProfilePic = itemView.findViewById(R.id.donorProfilePic);
 //            bloodGroupOfDonner = itemView.findViewById(R.id.bloodGroupOfDonner);
 //            contactOfDonner = itemView.findViewById(R.id.contactOfDonner);
 //            lastDonationDateDonner = itemView.findViewById(R.id.lastDonationDateDonner);

@@ -13,6 +13,14 @@
         android:gravity="center"
         android:orientation="horizontal">
 
+        <TextView
+            android:id="@+id/nameArchive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-black"
+            android:textColor="@color/black" />
+
         <ImageView
             android:id="@+id/callArchive"
             android:layout_width="120dp"
@@ -28,14 +36,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_message" />
-
-        <TextView
-            android:id="@+id/nameArchive"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-black"
-            android:textColor="@color/black" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

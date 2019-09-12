@@ -1,9 +1,7 @@
 package com.teamjhj.donator_247blood.Fragment;
 
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -41,7 +38,7 @@ import com.teamjhj.donator_247blood.DataModel.NotificationData;
 import com.teamjhj.donator_247blood.DataModel.NotificationSender;
 import com.teamjhj.donator_247blood.DataModel.UserProfile;
 import com.teamjhj.donator_247blood.R;
-import com.teamjhj.donator_247blood.RestApi.ApiClient;
+import com.teamjhj.donator_247blood.RestApi.NotificationAPI;
 import com.teamjhj.donator_247blood.RestApi.ApiInterface;
 
 import java.text.ParseException;
@@ -274,7 +271,7 @@ public class DonnerListFragment extends Fragment {
             Date date = Calendar.getInstance().getTime();
 
             DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(userProfile.getUid());
-            apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            apiInterface = NotificationAPI.getClient().create(ApiInterface.class);
             Log.e("UID", userProfile.getUid());
             //Log.e("Donor's Token",userProfile.getToken());
             String tempToken = AppData.getUserProfile().getToken();

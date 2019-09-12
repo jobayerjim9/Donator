@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/material_background"
     android:fillViewport="true"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="false">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -54,9 +54,21 @@
             app:srcCompat="@drawable/logo_white" />
 
         <TextView
+            android:id="@+id/welcomeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:text="Powered By Visiomaries BD"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/logoImage"
+            app:layout_constraintStart_toStartOf="@+id/expMenu"
+            app:layout_constraintTop_toTopOf="@+id/logoImage" />
+
+        <TextView
             android:id="@+id/searchDonorLabel"
             android:layout_width="0dp"
-            android:layout_height="95dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
@@ -69,6 +81,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/searchDonnerScrollView" />
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="2dp"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/searchDonorMessage"
+            app:layout_constraintEnd_toEndOf="@+id/searchDonorMessage"
+            app:layout_constraintStart_toStartOf="@+id/searchDonorMessage"
+            app:layout_constraintTop_toBottomOf="@+id/searchCardView" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/searchCardView"
@@ -127,20 +149,21 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/searchDonorMessage"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
             android:foregroundGravity="center"
             android:visibility="visible"
             app:cardCornerRadius="16dp"
+            app:contentPadding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/blood_transfusion"
-            app:layout_constraintVertical_bias="0.35000002">
+            app:layout_constraintTop_toBottomOf="@+id/searchDonnerScrollView"
+            app:layout_constraintVertical_bias="0.0">
 
             <TextView
                 android:id="@+id/textView47"
@@ -149,9 +172,9 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/teko_semibold"
                 android:gravity="center"
-                android:text="Select Emergency Or Non-Emergency"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
+                android:text="Select Urgency Type To Preceed"
+                android:textColor="@color/material_background"
+                android:textSize="18sp" />
         </androidx.cardview.widget.CardView>
 
         <androidx.core.widget.NestedScrollView
@@ -277,6 +300,11 @@
                         app:layout_constraintTop_toBottomOf="@+id/pickLocation">
 
 
+                        <Spinner
+                            android:id="@+id/selectBloodGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
                         <TextView
                             android:id="@+id/selectBloodGroupLabel"
                             android:layout_width="wrap_content"
@@ -287,11 +315,6 @@
                             android:fontFamily="@font/roboto_bold"
                             android:textAlignment="viewStart"
                             android:textColor="@color/black" />
-
-                        <Spinner
-                            android:id="@+id/selectBloodGroup"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
 
                     </LinearLayout>
 
@@ -319,19 +342,6 @@
             </androidx.cardview.widget.CardView>
         </androidx.core.widget.NestedScrollView>
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/blood_transfusion"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="32dp"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchCardView"
-            app:lottie_autoPlay="true"
-            app:lottie_fileName="blood_transfusion.json"
-            app:lottie_loop="true" />
-
         <pro.midev.expandedmenulibrary.ExpandedMenuView
             android:id="@+id/expMenu"
             android:layout_width="0dp"
@@ -346,5 +356,33 @@
             app:layout_constraintStart_toEndOf="@+id/logoImage"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+            android:id="@+id/youtube_player_view"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+
+            android:layout_marginTop="8dp"
+            app:autoPlay="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/headingYoutube"
+            app:layout_constraintVertical_bias="0.0"
+            app:showFullScreenButton="false"
+            app:videoId="Rb-_d6-ZY9c" />
+
+        <TextView
+            android:id="@+id/headingYoutube"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="sans-serif-black"
+            android:paddingTop="32dp"
+            android:text="How To Use App"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchDonorMessage" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

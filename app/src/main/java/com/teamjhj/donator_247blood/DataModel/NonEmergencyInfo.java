@@ -4,7 +4,7 @@ public class NonEmergencyInfo {
     private String location, selectedBloodGroup, reason, name, phone, key, uid, bags;
     private int date, month, year, hour, minute;
     private double lat, longt;
-    private boolean liked;
+    private boolean liked,accepted;
     private double distamceFromUser;
     private boolean closed;
     public NonEmergencyInfo() {
@@ -17,6 +17,14 @@ public class NonEmergencyInfo {
         this.lat = lat;
         this.longt = longt;
         this.uid = uid;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
     }
 
     public boolean isClosed() {

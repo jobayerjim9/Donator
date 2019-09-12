@@ -2,6 +2,7 @@ package com.teamjhj.donator_247blood.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -38,6 +39,61 @@ public class AboutUsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     finish();
+                }
+            });
+            CardView jimCard=findViewById(R.id.jimCard);
+            jimCard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    intent.setData(Uri.parse("https://www.facebook.com/jobayer9"));
+                    startActivity(intent);
+                }
+            });
+            CardView mituCard=findViewById(R.id.mituCard);
+            mituCard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    intent.setData(Uri.parse("https://www.facebook.com/mitu159"));
+                    startActivity(intent);
+                }
+            });
+            CardView fayjulCard=findViewById(R.id.fayjulCard);
+            fayjulCard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    intent.setData(Uri.parse("https://www.facebook.com/FI.Chayon"));
+                    startActivity(intent);
+                }
+            });
+            CardView shawonCard=findViewById(R.id.shawonCard);
+            shawonCard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    intent.setData(Uri.parse("https://www.facebook.com/shawon00788"));
+                    startActivity(intent);
+                }
+            });
+            CardView mahinCard=findViewById(R.id.mahinCard);
+            mahinCard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    intent.setData(Uri.parse("https://www.facebook.com/mahin.shaa"));
+                    startActivity(intent);
                 }
             });
             facebookSupportPage.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +155,13 @@ public class AboutUsActivity extends AppCompatActivity {
         {
             e.printStackTrace();
         }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
 
     }
 }

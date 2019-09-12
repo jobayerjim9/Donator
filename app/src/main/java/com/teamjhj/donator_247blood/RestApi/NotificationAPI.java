@@ -3,7 +3,7 @@ package com.teamjhj.donator_247blood.RestApi;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ApiClient {
+public class NotificationAPI {
 
     public static final String BASE_URL = "https://fcm.googleapis.com/";
     public static Retrofit retrofit = null;

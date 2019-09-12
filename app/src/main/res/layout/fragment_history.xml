@@ -155,38 +155,35 @@
                         app:layout_constraintBottom_toTopOf="@+id/addDonationInfo"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/nothingFoundHistory" />
+                        app:layout_constraintTop_toBottomOf="@+id/nothingFoundHistory"
+                        app:layout_constraintVertical_bias="0.0" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/historyRecycler"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
                         android:isScrollContainer="true"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="always"
                         android:scrollbars="vertical"
                         android:visibility="visible"
-                        app:layout_constraintBottom_toTopOf="@+id/addDonationInfo"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/headingTableHistory"
-                        app:layout_constraintVertical_bias="0.43" />
+                        app:layout_constraintTop_toBottomOf="@+id/headingTableHistory" />
 
                     <com.airbnb.lottie.LottieAnimationView
                         android:id="@+id/nothingFoundHistory"
                         android:layout_width="0dp"
                         android:layout_height="200dp"
-                        android:layout_marginTop="24dp"
                         android:layout_marginEnd="8dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/historyHeading"
                         app:lottie_autoPlay="true"
                         app:lottie_fileName="no_history.json"
                         app:lottie_loop="true" />
@@ -196,7 +193,7 @@
                         android:layout_width="0dp"
                         android:layout_height="30dp"
                         android:layout_marginStart="24dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="16dp"
                         android:layout_marginEnd="24dp"
                         android:layout_marginBottom="8dp"
                         android:background="@color/dark_red"
@@ -208,7 +205,8 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/historyRecycler" />
+                        app:layout_constraintTop_toBottomOf="@+id/historyRecycler"
+                        app:layout_constraintVertical_bias="1.0" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -77,7 +77,7 @@
                         android:layout_marginEnd="16dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/roboto_bold"
-                        android:text="I Didn't Donated Yet!"
+                        android:text="I Haven't Donated Yet!"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
                 </LinearLayout>

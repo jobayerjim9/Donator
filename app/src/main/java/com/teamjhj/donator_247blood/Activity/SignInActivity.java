@@ -222,7 +222,7 @@ public class SignInActivity extends AppCompatActivity {
             loading_sign_in.setVisibility(View.VISIBLE);
             facebookLoginButton.setVisibility(View.GONE);
             googleSignIn.setVisibility(View.GONE);
-            new SignInAction().execute();
+            signInAction();
         }
 
     }
@@ -377,35 +377,14 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class SignInAction extends AsyncTask {
-        ProgressDialog progressDialog;
+    private void signInAction()
+    {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(SignInActivity.this);
-            progressDialog.show();
-        }
-
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            sendVerificationCode(mobileNumberValue);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object o) {
-            super.onPostExecute(o);
-            progressDialog.dismiss();
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mobileNumber.setVisibility(View.GONE);
-                    signInButton.setVisibility(View.GONE);
-                    verificationCode.setVisibility(View.VISIBLE);
-                }
-            });
-        }
+        sendVerificationCode(mobileNumberValue);
+        mobileNumber.setVisibility(View.GONE);
+        signInButton.setVisibility(View.GONE);
+        verificationCode.setVisibility(View.VISIBLE);
     }
+
+
 }

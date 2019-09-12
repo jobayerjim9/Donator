@@ -17,13 +17,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 import com.teamjhj.donator_247blood.DataModel.AcceptingData;
 import com.teamjhj.donator_247blood.DataModel.AppData;
 import com.teamjhj.donator_247blood.DataModel.NonEmergencyInfo;
@@ -33,7 +36,7 @@ import com.teamjhj.donator_247blood.DataModel.PendingDonationData;
 import com.teamjhj.donator_247blood.DataModel.UserProfile;
 import com.teamjhj.donator_247blood.Fragment.BloodFeedFragment;
 import com.teamjhj.donator_247blood.R;
-import com.teamjhj.donator_247blood.RestApi.ApiClient;
+import com.teamjhj.donator_247blood.RestApi.NotificationAPI;
 import com.teamjhj.donator_247blood.RestApi.ApiInterface;
 
 import java.util.ArrayList;
@@ -80,8 +83,14 @@ public class BloodFeedAcceptedAdapter extends RecyclerView.Adapter<BloodFeedAcce
 
             }
         });
-
-        holder.nameOfDonnerAcceptedFeed.setText(userProfiles.get(position).getName());
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference().child("UserProfilePicture").child(userProfiles.get(position).getUid());
+        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get().load(uri).placeholder(R.drawable.com_facebook_profile_picture_blank_square).into(holder.acceptedDonorProfilePicBloodFeed);
+            }
+        });        holder.nameOfDonnerAcceptedFeed.setText(userProfiles.get(position).getName());
         if (acceptingData.get(position).getRadius() != -1) {
             holder.distanceBarAcceptedFeed.setProgress(acceptingData.get(position).getRadius());
             String placeHolder = "Within " + acceptingData.get(position).getRadius() + " K.m";
@@ -123,7 +132,7 @@ public class BloodFeedAcceptedAdapter extends RecyclerView.Adapter<BloodFeedAcce
             Date date = Calendar.getInstance().getTime();
 
             DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(userProfile.getUid());
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface apiInterface = NotificationAPI.getClient().create(ApiInterface.class);
             //Log.e("UID", userProfile.getUid());
             //Log.e("Donor's Token",userProfile.getToken());
             //String tempToken = AppData.getUserProfile().getToken();
@@ -206,7 +215,7 @@ public class BloodFeedAcceptedAdapter extends RecyclerView.Adapter<BloodFeedAcce
 
     class BloodFeedAcceptedViewHolder extends RecyclerView.ViewHolder {
         TextView nameOfDonnerAcceptedFeed, distanceTextAcceptedFeed;
-        ImageView callButtonAcceptedFeed, messageDonorAcceptedFeed;
+        ImageView callButtonAcceptedFeed, messageDonorAcceptedFeed,acceptedDonorProfilePicBloodFeed;
         Button bloodRecievedButtonFeed;
         ProgressBar distanceBarAcceptedFeed;
 
@@ -218,6 +227,7 @@ public class BloodFeedAcceptedAdapter extends RecyclerView.Adapter<BloodFeedAcce
             messageDonorAcceptedFeed = itemView.findViewById(R.id.messageDonorAcceptedFeed);
             bloodRecievedButtonFeed = itemView.findViewById(R.id.bloodRecievedButtonFeed);
             distanceBarAcceptedFeed = itemView.findViewById(R.id.distanceBarAcceptedFeed);
+            acceptedDonorProfilePicBloodFeed = itemView.findViewById(R.id.acceptedDonorProfilePicBloodFeed);
         }
     }
 }

@@ -2,18 +2,24 @@ package com.teamjhj.donator_247blood.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 import com.teamjhj.donator_247blood.Activity.ChatActivity;
 import com.teamjhj.donator_247blood.DataModel.ChatData;
 import com.teamjhj.donator_247blood.R;
@@ -60,6 +66,14 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             holder.nameMessenger.setTextColor(ctx.getResources().getColor(R.color.white));
             holder.messageMessenger.setTextColor(ctx.getResources().getColor(R.color.white));
         }
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference().child("UserProfilePicture").child(chatData.get(position).getUid());
+        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get().load(uri).placeholder(R.drawable.com_facebook_profile_picture_blank_square).into(holder.messengerProfilePic);
+            }
+        });
     }
 
     @Override
@@ -76,12 +90,13 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
     class ChatListViewHolder extends RecyclerView.ViewHolder {
         TextView nameMessenger, messageMessenger;
         CardView messenger_people;
-
+        ImageView messengerProfilePic;
         ChatListViewHolder(@NonNull View itemView) {
             super(itemView);
             nameMessenger = itemView.findViewById(R.id.nameMessenger);
             messageMessenger = itemView.findViewById(R.id.messageMessenger);
             messenger_people = itemView.findViewById(R.id.messenger_people);
+            messengerProfilePic = itemView.findViewById(R.id.messengerProfilePic);
         }
     }
 }

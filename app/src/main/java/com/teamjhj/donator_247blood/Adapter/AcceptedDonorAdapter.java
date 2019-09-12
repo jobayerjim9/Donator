@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +31,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 import com.teamjhj.donator_247blood.Activity.ChatActivity;
 import com.teamjhj.donator_247blood.DataModel.AcceptingData;
 import com.teamjhj.donator_247blood.DataModel.AppData;
@@ -39,7 +43,7 @@ import com.teamjhj.donator_247blood.DataModel.NotificationSender;
 import com.teamjhj.donator_247blood.DataModel.PendingDonationData;
 import com.teamjhj.donator_247blood.DataModel.UserProfile;
 import com.teamjhj.donator_247blood.R;
-import com.teamjhj.donator_247blood.RestApi.ApiClient;
+import com.teamjhj.donator_247blood.RestApi.NotificationAPI;
 import com.teamjhj.donator_247blood.RestApi.ApiInterface;
 
 import java.io.IOException;
@@ -108,6 +112,14 @@ public class AcceptedDonorAdapter extends RecyclerView.Adapter<AcceptedDonorAdap
 
                 }
             });
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageReference = storage.getReference().child("UserProfilePicture").child(donnersData.get(position).getUid());
+            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.get().load(uri).placeholder(R.drawable.com_facebook_profile_picture_blank_square).into(holder.acceptedDonorProfilePic);
+                }
+            });
 //            holder.bloodGroupOfDonner.setText(donnersData.get(position).getBloodGroup());
 //            holder.contactOfDonner.setText(donnersData.get(position).getMobileNumber());
 //            placeHolder = donnersData.get(position).getLastDonationDate() + "-" + donnersData.get(position).getLastDonationMonth() + "-" + donnersData.get(position).getLastDonationYear();
@@ -154,7 +166,7 @@ public class AcceptedDonorAdapter extends RecyclerView.Adapter<AcceptedDonorAdap
             Date date = Calendar.getInstance().getTime();
 
             DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(userProfile.getUid());
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface apiInterface = NotificationAPI.getClient().create(ApiInterface.class);
             Log.e("UID", userProfile.getUid());
             //Log.e("Donor's Token",userProfile.getToken());
            // String tempToken = AppData.getUserProfile().getToken();
@@ -304,7 +316,7 @@ public class AcceptedDonorAdapter extends RecyclerView.Adapter<AcceptedDonorAdap
     class AcceptedDonorViewHolder extends RecyclerView.ViewHolder {
         TextView nameOfDonnerAccepted, distanceTextAccepted;
         ProgressBar distanceBarAccepted;
-        ImageView callButtonAccepted, messageDonorAccepted;
+        ImageView callButtonAccepted, messageDonorAccepted,acceptedDonorProfilePic;
         Button bloodRecievedButton;
         AcceptedDonorViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -314,6 +326,7 @@ public class AcceptedDonorAdapter extends RecyclerView.Adapter<AcceptedDonorAdap
             callButtonAccepted = itemView.findViewById(R.id.callButtonAccepted);
             messageDonorAccepted = itemView.findViewById(R.id.messageDonorAccepted);
             bloodRecievedButton = itemView.findViewById(R.id.bloodRecievedButton);
+            acceptedDonorProfilePic = itemView.findViewById(R.id.acceptedDonorProfilePic);
 
         }
     }

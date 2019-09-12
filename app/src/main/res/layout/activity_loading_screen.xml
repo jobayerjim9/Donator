@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent">
+    android:background="#EEEEEE">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,23 +23,7 @@
             app:layout_constraintEnd_toEndOf="@+id/cardView2"
             app:layout_constraintStart_toStartOf="@+id/cardView2"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/donator_logo_red" />
-
-        <com.manojbhadane.QButton
-            android:id="@+id/donationDetailsButton"
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/dark_red"
-            android:fontFamily="@font/roboto_bold"
-            android:text="@string/know_more"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:srcCompat="@drawable/logo_red" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView2"
@@ -84,6 +68,22 @@
             app:lottie_autoPlay="true"
             app:lottie_fileName="dotted-loader.json"
             app:lottie_loop="true" />
+
+        <com.manojbhadane.QButton
+            android:id="@+id/donationDetailsButton"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/dark_red"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/know_more"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

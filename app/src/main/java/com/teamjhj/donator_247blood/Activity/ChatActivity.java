@@ -31,7 +31,7 @@ import com.teamjhj.donator_247blood.DataModel.NotificationData;
 import com.teamjhj.donator_247blood.DataModel.NotificationSender;
 import com.teamjhj.donator_247blood.DataModel.UserProfile;
 import com.teamjhj.donator_247blood.R;
-import com.teamjhj.donator_247blood.RestApi.ApiClient;
+import com.teamjhj.donator_247blood.RestApi.NotificationAPI;
 import com.teamjhj.donator_247blood.RestApi.ApiInterface;
 
 import java.util.ArrayList;
@@ -205,7 +205,7 @@ public class ChatActivity extends AppCompatActivity {
             // DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid());
 
 
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface apiInterface = NotificationAPI.getClient().create(ApiInterface.class);
             Log.e("UID", userProfile.getUid());
             //Log.e("Donor's Token",userProfile.getToken());
             String tempToken = AppData.getUserProfile().getToken();
@@ -234,5 +234,11 @@ public class ChatActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

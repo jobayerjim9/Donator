@@ -147,4 +147,17 @@ public class AppIntoActivity extends AppIntro {
             finish();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null)
+        {
+            finish();
+        }
+        else {
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+        }
+    }
 }

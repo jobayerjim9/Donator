@@ -37,7 +37,7 @@ import com.teamjhj.donator_247blood.DataModel.NotificationData;
 import com.teamjhj.donator_247blood.DataModel.NotificationSender;
 import com.teamjhj.donator_247blood.DataModel.UserProfile;
 import com.teamjhj.donator_247blood.R;
-import com.teamjhj.donator_247blood.RestApi.ApiClient;
+import com.teamjhj.donator_247blood.RestApi.NotificationAPI;
 import com.teamjhj.donator_247blood.RestApi.ApiInterface;
 
 import java.util.Calendar;
@@ -240,7 +240,7 @@ public class BloodRequestDialog extends DialogFragment {
 
     private void sendNotification() {
         try {
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface apiInterface = NotificationAPI.getClient().create(ApiInterface.class);
             String tempToken = AppData.getUserProfile().getToken();
             Log.e("MyToken", tempToken);
             String notificationMessage = AppData.getUserProfile().getName() + " Accepted Your Emergency Blood Request!";

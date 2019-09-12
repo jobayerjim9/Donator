@@ -52,7 +52,8 @@ public class FilterDialogFragment extends DialogFragment {
         sortByDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BloodFeedFragment.setFilter("no");
+                BloodFeedFragment.nonEmergencyInfosBackup.clear();
+                BloodFeedFragment.setFilter("date");
                 BloodFeedFragment.getDataFromDatabase();
                 dismiss();
             }

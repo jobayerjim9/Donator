@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".Activity.MainActivity">
 
+    <ImageView
+        android:id="@+id/tempImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:srcCompat="@tools:sample/avatars" />
+
     <com.ismaeldivita.chipnavigation.ChipNavigationBar
         android:id="@+id/bottom_menu"
         android:layout_width="0dp"
