@@ -47,7 +47,7 @@ public class MenuFragment extends Fragment {
     FirebaseStorage storage;
     StorageReference storageReference;
     FragmentTransaction ft;
-    private CardView nearbyMenu,viewProfileMenu, emergencyRequestMenu, notificationMenu, postsMenu, messengerMenu, archiveMenu, historyRequestMenu;
+    private CardView howToMenu,nearbyMenu,viewProfileMenu, emergencyRequestMenu, notificationMenu, postsMenu, messengerMenu, archiveMenu, historyRequestMenu;
     private LinearLayout menuLayout;
     public MenuFragment() {
         // Required empty public constructor
@@ -90,6 +90,7 @@ public class MenuFragment extends Fragment {
         emergencyRequestMenu = v.findViewById(R.id.emergencyRequestMenu);
         notificationMenu = v.findViewById(R.id.notificationMenu);
         postsMenu = v.findViewById(R.id.postsMenu);
+        howToMenu = v.findViewById(R.id.howToMenu);
         messengerMenu = v.findViewById(R.id.messengerMenu);
         menuLayout = v.findViewById(R.id.menuLayout);
         historyRequestMenu = v.findViewById(R.id.historyRequestMenu);
@@ -99,6 +100,15 @@ public class MenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getContext(), NearbyLocationActivity.class));
+            }
+        });
+        howToMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=n0IgM4FUcVM"));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setPackage("com.google.android.youtube");
+                startActivity(intent);
             }
         });
         viewProfileMenu.setOnClickListener(new View.OnClickListener() {

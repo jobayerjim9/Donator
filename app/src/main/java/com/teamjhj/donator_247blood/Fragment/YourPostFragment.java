@@ -84,11 +84,23 @@ public class YourPostFragment extends Fragment {
                         android.R.color.holo_orange_light,
                         android.R.color.holo_red_light);
                 myPostShimmer.startShimmer();
-                BloodFeedFragment.getDataFromDatabase();
+                try {
+                    BloodFeedFragment.getDataFromDatabase();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
 
         });
-        BloodFeedFragment.getDataFromDatabase();
+        try {
+            BloodFeedFragment.getDataFromDatabase();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         return v;
     }
 

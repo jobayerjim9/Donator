@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,118 +80,122 @@ public class EmergencyRequestFragment extends Fragment {
         acceptedRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         acceptedDonorAdapter = new AcceptedDonorAdapter(getContext(), userProfiles, radius);
         acceptedRecycler.setAdapter(acceptedDonorAdapter);
-        liveRequest = FirebaseDatabase.getInstance().getReference("LiveRequest").child(FirebaseAuth.getInstance().getUid());
-        liveRequest.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                liveBloodRequest = dataSnapshot.getValue(LiveBloodRequest.class);
-                if (liveBloodRequest != null) {
-                    String blood1, blood2;
-                    Date date = liveBloodRequest.getDate();
-                    String placeHolder = date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() + 1900);
-                    if (liveBloodRequest.getBloodGroup().contains("A+")) {
-                        blood1 = "A+";
-                        blood2 = "A Positive";
-                    } else if (liveBloodRequest.getBloodGroup().contains("A-")) {
-                        blood1 = "A-";
-                        blood2 = "A Negative";
-                    } else if (liveBloodRequest.getBloodGroup().contains("AB+")) {
-                        blood1 = "AB+";
-                        blood2 = "AB Positive";
-                    } else if (liveBloodRequest.getBloodGroup().contains("AB-")) {
-                        blood1 = "AB-";
-                        blood2 = "AB Negative";
-                    } else if (liveBloodRequest.getBloodGroup().contains("B+")) {
-                        blood1 = "B+";
-                        blood2 = "B Positive";
-                    } else if (liveBloodRequest.getBloodGroup().contains("B-")) {
-                        blood1 = "B-";
-                        blood2 = "B Negative";
-                    } else if (liveBloodRequest.getBloodGroup().contains("O+")) {
-                        blood1 = "O+";
-                        blood2 = "O Positive";
-                    } else if (liveBloodRequest.getBloodGroup().contains("O-")) {
-                        blood1 = "O-";
-                        blood2 = "O Negative";
-                    } else {
-                        blood1 = "";
-                        blood2 = "";
+        try {
+            liveRequest = FirebaseDatabase.getInstance().getReference("LiveRequest").child(FirebaseAuth.getInstance().getUid());
+            liveRequest.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    liveBloodRequest = dataSnapshot.getValue(LiveBloodRequest.class);
+                    if (liveBloodRequest != null) {
+                        String blood1, blood2;
+                        Date date = liveBloodRequest.getDate();
+                        String placeHolder = date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() + 1900);
+                        if (liveBloodRequest.getBloodGroup().contains("A+")) {
+                            blood1 = "A+";
+                            blood2 = "A Positive";
+                        } else if (liveBloodRequest.getBloodGroup().contains("A-")) {
+                            blood1 = "A-";
+                            blood2 = "A Negative";
+                        } else if (liveBloodRequest.getBloodGroup().contains("AB+")) {
+                            blood1 = "AB+";
+                            blood2 = "AB Positive";
+                        } else if (liveBloodRequest.getBloodGroup().contains("AB-")) {
+                            blood1 = "AB-";
+                            blood2 = "AB Negative";
+                        } else if (liveBloodRequest.getBloodGroup().contains("B+")) {
+                            blood1 = "B+";
+                            blood2 = "B Positive";
+                        } else if (liveBloodRequest.getBloodGroup().contains("B-")) {
+                            blood1 = "B-";
+                            blood2 = "B Negative";
+                        } else if (liveBloodRequest.getBloodGroup().contains("O+")) {
+                            blood1 = "O+";
+                            blood2 = "O Positive";
+                        } else if (liveBloodRequest.getBloodGroup().contains("O-")) {
+                            blood1 = "O-";
+                            blood2 = "O Negative";
+                        } else {
+                            blood1 = "";
+                            blood2 = "";
+                        }
+                        bloodGroupLargePending.setText(blood1);
+                        bloodGroupSmallPending.setText(blood2);
+                        datePendingPost.setText(placeHolder);
+                        reasonBloodPending.setText(liveBloodRequest.getReason());
                     }
-                    bloodGroupLargePending.setText(blood1);
-                    bloodGroupSmallPending.setText(blood2);
-                    datePendingPost.setText(placeHolder);
-                    reasonBloodPending.setText(liveBloodRequest.getReason());
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
-        liveRequest.child("DonorsFound").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                radius.clear();
-                userProfiles.clear();
-                if (dataSnapshot.exists()) {
-                    emergencyRequestShimmer.stopShimmer();
-                    emergencyRequestShimmer.setVisibility(View.GONE);
-                    nothingFoundRequest.setVisibility(View.VISIBLE);
-                    no_blood_request.setVisibility(View.VISIBLE);
-                    no_blood_request.setText("No Donor Respond!");
-                    pendingRequestCard.setVisibility(View.VISIBLE);
-                    acceptedDonorText.setVisibility(View.VISIBLE);
-                } else {
-                    emergencyRequestShimmer.stopShimmer();
-                    emergencyRequestShimmer.setVisibility(View.GONE);
-                    no_blood_request.setVisibility(View.VISIBLE);
-                    nothingFoundRequest.setVisibility(View.VISIBLE);
-                    no_blood_request.setText("No Pending Blood Request!");
-                    pendingRequestCard.setVisibility(View.GONE);
-                    acceptedDonorText.setVisibility(View.GONE);
                 }
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+            });
+            liveRequest.child("DonorsFound").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    radius.clear();
+                    userProfiles.clear();
+                    if (dataSnapshot.exists()) {
+                        emergencyRequestShimmer.stopShimmer();
+                        emergencyRequestShimmer.setVisibility(View.GONE);
+                        nothingFoundRequest.setVisibility(View.VISIBLE);
+                        no_blood_request.setVisibility(View.VISIBLE);
+                        no_blood_request.setText("No Donor Respond!");
+                        pendingRequestCard.setVisibility(View.VISIBLE);
+                        acceptedDonorText.setVisibility(View.VISIBLE);
+                    } else {
+                        emergencyRequestShimmer.stopShimmer();
+                        emergencyRequestShimmer.setVisibility(View.GONE);
+                        no_blood_request.setVisibility(View.VISIBLE);
+                        nothingFoundRequest.setVisibility(View.VISIBLE);
+                        no_blood_request.setText("No Pending Blood Request!");
+                        pendingRequestCard.setVisibility(View.GONE);
+                        acceptedDonorText.setVisibility(View.GONE);
+                    }
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
 
-                    acceptingData = dataSnapshot1.getValue(AcceptingData.class);
-                    String key = dataSnapshot1.getKey();
-                    if (key != null && acceptingData != null) {
-                        if (acceptingData.isAccepted()) {
-                            DatabaseReference profile = FirebaseDatabase.getInstance().getReference("UserProfile").child(key);
-                            profile.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
-                                    if (userProfile != null) {
-                                        userProfiles.add(userProfile);
-                                        radius.add(acceptingData.getRadius());
-
-                                        acceptedDonorAdapter.notifyDataSetChanged();
-                                        no_blood_request.setVisibility(View.GONE);
-                                        nothingFoundRequest.setVisibility(View.GONE);
-                                        emergencyRequestShimmer.stopShimmer();
-                                        emergencyRequestShimmer.setVisibility(View.GONE);
+                        acceptingData = dataSnapshot1.getValue(AcceptingData.class);
+                        String key = dataSnapshot1.getKey();
+                        if (key != null && acceptingData != null) {
+                            if (acceptingData.isAccepted()) {
+                                DatabaseReference profile = FirebaseDatabase.getInstance().getReference("UserProfile").child(key);
+                                profile.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+                                        if (userProfile != null) {
+                                            userProfiles.add(userProfile);
+                                            radius.add(acceptingData.getRadius());
+                                            Log.d("Sizes", userProfiles.size() + " " + radius.size());
+                                            acceptedDonorAdapter.notifyDataSetChanged();
+                                            no_blood_request.setVisibility(View.GONE);
+                                            nothingFoundRequest.setVisibility(View.GONE);
+                                            emergencyRequestShimmer.stopShimmer();
+                                            emergencyRequestShimmer.setVisibility(View.GONE);
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
+                                    }
+                                });
+                            }
                         }
                     }
+
+
                 }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
+                }
+            });
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         Button cancelRequestButton = v.findViewById(R.id.cancelRequestButton);
         cancelRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override

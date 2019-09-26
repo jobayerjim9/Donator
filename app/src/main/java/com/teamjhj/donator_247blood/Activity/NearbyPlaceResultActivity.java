@@ -112,6 +112,7 @@ public class NearbyPlaceResultActivity extends AppCompatActivity {
                     NearbyRawData data=response.body();
                     if(data!=null)
                     {
+
                         nearbyShimmer.stopShimmer();
                         nearbyShimmer.setVisibility(View.GONE);
                         nearbyPlaceData.addAll(data.getResults());

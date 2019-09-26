@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -52,7 +53,9 @@ import com.squareup.picasso.Picasso;
 import com.teamjhj.donator_247blood.Adapter.BottomTabAdapter;
 import com.teamjhj.donator_247blood.DataModel.AppData;
 import com.teamjhj.donator_247blood.DataModel.UserProfile;
+import com.teamjhj.donator_247blood.Fragment.BloodFeedFragment;
 import com.teamjhj.donator_247blood.Fragment.BloodRequestDialog;
+import com.teamjhj.donator_247blood.Fragment.SearchDonnerFragment;
 import com.teamjhj.donator_247blood.Fragment.ViewPendingHistoryDialog;
 import com.teamjhj.donator_247blood.Helper.BottomTabViewPager;
 import com.teamjhj.donator_247blood.R;
@@ -86,23 +89,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         if(savedInstanceState!=null)
         {
-            selectedTab=savedInstanceState.getInt("tab");
-            if(selectedTab==0)
-            {
-                bottom_menu.setItemSelected(R.id.search_donor);
-                bottomTabViewPager.setCurrentItem(0);
+            try {
+                selectedTab = savedInstanceState.getInt("tab");
+                if (selectedTab == 0) {
+                    bottom_menu.setItemSelected(R.id.search_donor);
+                    bottomTabViewPager.setCurrentItem(0);
+                } else if (selectedTab == 1) {
+                    bottom_menu.setItemSelected(R.id.blood_feed);
+                    bottomTabViewPager.setCurrentItem(1);
+                } else if (selectedTab == 2) {
+                    bottom_menu.setItemSelected(R.id.menu);
+                    bottomTabViewPager.setCurrentItem(2);
+                }
+                getDataFromDatabase();
             }
-            else if (selectedTab==1)
+            catch (Exception e)
             {
-                bottom_menu.setItemSelected(R.id.blood_feed);
-                bottomTabViewPager.setCurrentItem(1);
+                e.printStackTrace();
             }
-            else if (selectedTab==2)
-            {
-                bottom_menu.setItemSelected(R.id.menu);
-                bottomTabViewPager.setCurrentItem(2);
-            }
-            getDataFromDatabase();
         }
         try {
             NoInternetDialog noInternetDialog = new NoInternetDialog.Builder(this).setButtonColor(R.color.material_background).build();
@@ -203,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
         bottom_menu.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
             @Override
             public void onItemSelected(int i) {
+
                 if(i==R.id.search_donor)
                 {
                     selectedTab=0;
@@ -213,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     selectedTab=1;
                     bottomTabViewPager.setCurrentItem(1);
+
                 }
                 else if(i==R.id.menu)
                 {
@@ -309,23 +315,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        selectedTab=savedInstanceState.getInt("tab");
-        if(selectedTab==0)
-        {
-            bottom_menu.setItemSelected(R.id.search_donor);
-            bottomTabViewPager.setCurrentItem(0);
+        try {
+            selectedTab = savedInstanceState.getInt("tab");
+            if (selectedTab == 0) {
+                bottom_menu.setItemSelected(R.id.search_donor);
+                bottomTabViewPager.setCurrentItem(0);
+            } else if (selectedTab == 1) {
+                bottom_menu.setItemSelected(R.id.blood_feed);
+                bottomTabViewPager.setCurrentItem(1);
+            } else if (selectedTab == 2) {
+                bottom_menu.setItemSelected(R.id.menu);
+                bottomTabViewPager.setCurrentItem(2);
+            }
+            getDataFromDatabase();
         }
-        else if (selectedTab==1)
+        catch (Exception e)
         {
-            bottom_menu.setItemSelected(R.id.blood_feed);
-            bottomTabViewPager.setCurrentItem(1);
+            e.printStackTrace();
         }
-        else if (selectedTab==2)
-        {
-            bottom_menu.setItemSelected(R.id.menu);
-            bottomTabViewPager.setCurrentItem(2);
-        }
-        getDataFromDatabase();
 
     }
 
@@ -477,6 +484,7 @@ public class MainActivity extends AppCompatActivity {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 updateUserLocation(0);
+
                 } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 Toast.makeText(this, "Please Allow Location Permission", Toast.LENGTH_LONG).show();

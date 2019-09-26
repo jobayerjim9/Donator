@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
-            android:text="Powered By Visiomaries BD"
+            android:text="Powered By Visionaries BD"
             android:textColor="@android:color/white"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/logoImage"
@@ -217,7 +217,7 @@
                         android:drawableLeft="@drawable/ic_date"
                         android:padding="4dp"
                         android:paddingStart="16dp"
-                        android:text="Pick Date"
+                        android:text="Pick A Date"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/spinnerBackground" />
@@ -277,6 +277,7 @@
                         android:ems="10"
                         android:hint="How Many Bags Need?"
                         android:inputType="numberSigned"
+                        android:maxLength="2"
                         android:padding="8dp"
                         android:paddingStart="16dp"
                         android:textSize="14sp"
@@ -335,7 +336,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:drawableLeft="@drawable/ic_hash_tag"
-                            android:drawablePadding="4dp" />
+                            android:drawablePadding="4dp"
+                            android:inputType="text" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -356,21 +358,6 @@
             app:layout_constraintStart_toEndOf="@+id/logoImage"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-            android:id="@+id/youtube_player_view"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-
-            android:layout_marginTop="8dp"
-            app:autoPlay="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/headingYoutube"
-            app:layout_constraintVertical_bias="0.0"
-            app:showFullScreenButton="false"
-            app:videoId="Rb-_d6-ZY9c" />
-
         <TextView
             android:id="@+id/headingYoutube"
             android:layout_width="wrap_content"
@@ -378,11 +365,24 @@
             android:layout_marginTop="32dp"
             android:fontFamily="sans-serif-black"
             android:paddingTop="32dp"
-            android:text="How To Use App"
+            android:text="Confused?"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchDonorMessage" />
+
+        <Button
+            android:id="@+id/youtubeHowTo"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/white"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="See How To Use App!"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/headingYoutube" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

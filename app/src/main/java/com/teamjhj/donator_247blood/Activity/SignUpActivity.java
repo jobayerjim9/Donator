@@ -116,7 +116,7 @@ public class SignUpActivity extends AppCompatActivity implements DatePickerDialo
             @Override
             public void onClick(View v) {
                 if (count == 0) {
-                    if (Objects.requireNonNull(nameInputSignUp.getEditText()).getText().toString().isEmpty()) {
+                    if (Objects.requireNonNull(nameInputSignUp.getEditText()).getText().toString().trim().isEmpty()) {
 
                         nameInputSignUp.setErrorEnabled(true);
                         nameInputSignUp.setError("Please Enter Your Name");

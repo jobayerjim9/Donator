@@ -135,7 +135,7 @@ public class EditProfileFragment extends Fragment implements DatePickerDialog.On
     }
 
     private void updateData() {
-        String name = nameEditProfile.getEditText().getText().toString();
+        String name = nameEditProfile.getEditText().getText().toString().trim();
         if (name.isEmpty()) {
             Toast.makeText(getContext(), "Name Couldn't Be Empty", Toast.LENGTH_LONG).show();
         } else if (privacy == null) {

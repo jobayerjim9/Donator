@@ -146,7 +146,13 @@ public class DonnerListFragment extends Fragment {
                                                 //liveRequest.child("DonorsFound").child(FirebaseAuth.getInstance().getUid()).child("radius").setValue(radiusData.get(0));
                                     for (int i=0;i<donnersData.size();i++)
                                     {
-                                        liveRequest.child("DonorsFound").child(donnersData.get(i).getUid()).child("radius").setValue(radiusData.get(i));
+                                        try {
+                                            liveRequest.child("DonorsFound").child(donnersData.get(i).getUid()).child("radius").setValue(radiusData.get(i));
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            e.printStackTrace();
+                                        }
                                     }
 
                                     SuccessfulDialog successfulDialog=new SuccessfulDialog("Request Placed Successfully");

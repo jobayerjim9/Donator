@@ -41,13 +41,21 @@ public class AppIntoActivity extends AppIntro {
         sliderPage3.setDescription("You Can Place Request By Swiping! Donor Will Get Request Notification");
         addSlide(AppIntroFragment.newInstance(sliderPage3));
 
+        SliderPage sliderPage31=new SliderPage();
+        sliderPage31.setImageDrawable(R.drawable.app_intro_31);
+        sliderPage31.setBgColor(Color.parseColor("#EF5350"));
+        sliderPage31.setTitle("View Donor Profile!");
+        sliderPage31.setDescription("You Can View Donor Profile By Click On Profile Picture!");
+        addSlide(AppIntroFragment.newInstance(sliderPage31));
 
-        SliderPage sliderPage4=new SliderPage();
-        sliderPage4.setImageDrawable(R.drawable.app_intro_3);
-        sliderPage4.setBgColor(Color.parseColor("#EF5350"));
-        sliderPage4.setTitle("View Your Pending Request!");
-        sliderPage4.setDescription("You Can See The Donors Who Accepted Your Request! You Can Also Press 'Blood Received' To The Specific Person");
-        addSlide(AppIntroFragment.newInstance(sliderPage4));
+        SliderPage sliderPage32=new SliderPage();
+        sliderPage32.setImageDrawable(R.drawable.app_intro_32);
+        sliderPage32.setBgColor(Color.parseColor("#EF5350"));
+        sliderPage32.setTitle("View Your Emergency Requests!");
+        sliderPage32.setDescription("You Can See The Donors Who Accepted Your Request! You Can Also Press 'Blood Received' To The Specific Person");
+        addSlide(AppIntroFragment.newInstance(sliderPage32));
+
+
 
 
         SliderPage sliderPage5=new SliderPage();
@@ -70,6 +78,13 @@ public class AppIntoActivity extends AppIntro {
         sliderPage7.setTitle("Blood Feed!");
         sliderPage7.setDescription("You Can Help Someone By Donating Blood From Blood Feed! You Can Contact With The Requester By Opt In/Calling/Commenting/In App Messaging");
         addSlide(AppIntroFragment.newInstance(sliderPage7));
+
+        SliderPage sliderPage71=new SliderPage();
+        sliderPage71.setImageDrawable(R.drawable.app_intro_13);
+        sliderPage71.setBgColor(Color.parseColor("#EF5350"));
+        sliderPage71.setTitle("Share To The World!");
+        sliderPage71.setDescription("You Can Share Help Post Anywhere!");
+        addSlide(AppIntroFragment.newInstance(sliderPage71));
 
         SliderPage sliderPage8=new SliderPage();
         sliderPage8.setImageDrawable(R.drawable.app_intro_7);
@@ -105,6 +120,14 @@ public class AppIntoActivity extends AppIntro {
         sliderPage12.setTitle("Update Your History");
         sliderPage12.setDescription("If Someone Confirm You As A Donor!\nYou Will Get A Popup Notification! Accepting The Request Will Update Your Last Donation Date!");
         addSlide(AppIntroFragment.newInstance(sliderPage12));
+
+        SliderPage sliderPage14=new SliderPage();
+        sliderPage14.setImageDrawable(R.drawable.app_intro_12);
+        sliderPage14.setBgColor(Color.parseColor("#EF5350"));
+        sliderPage14.setTitle("Nearby Places!");
+        sliderPage14.setDescription("You Can Find Nearby Places: Hospital, Blood Banks, Clinics, Police Stations, Pharmacy, NGOs");
+        addSlide(AppIntroFragment.newInstance(sliderPage14));
+
 
         SliderPage sliderPage13=new SliderPage();
         sliderPage13.setImageDrawable(R.drawable.logo_white);

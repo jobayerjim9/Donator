@@ -165,25 +165,17 @@ public class BloodFeedFragment extends Fragment {
                         android.R.color.holo_green_light,
                         android.R.color.holo_orange_light,
                         android.R.color.holo_red_light);
-
-                getDataFromDatabase();
+                try {
+                    getDataFromDatabase();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         });
         this.mHandler = new Handler();
 //        m_Runnable.run();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (nonEmergencyInfosBackup.size()==0)
-                {
-                    bloodFeedShimmer.stopShimmer();
-                    bloodFeedShimmer.setVisibility(View.GONE);
-                    nothingFoundBloodFeed.setVisibility(View.VISIBLE);
-                    noPostTextView.setVisibility(View.VISIBLE);
-                    requestAdapter.notifyDataSetChanged();
-                }
-            }
-        }, 30000);
         return v;
     }
     public static void getDataFromDatabase() {
@@ -219,7 +211,6 @@ public class BloodFeedFragment extends Fragment {
                                         if (nonEmergencyInfo != null) {
                                             nonEmergencyInfo.setKey(dataSnapshot3.getKey());
                                             addData(nonEmergencyInfo);
-
                                             //nonEmergencyInfos.get(i).setDistamceFromUser(distance(latitude, longitude, nonEmergencyInfos.get(i).getLat(), nonEmergencyInfos.get(i).getLongt()));
                                             //updateDistanceData(nonEmergencyInfo);
                                         }
@@ -241,6 +232,13 @@ public class BloodFeedFragment extends Fragment {
 
                     }
 
+                }
+                sortByLocation();
+                if (nonEmergencyInfosBackup.isEmpty()) {
+                    nothingFoundBloodFeed.setVisibility(View.VISIBLE);
+                    noPostTextView.setVisibility(View.VISIBLE);
+                    bloodFeedShimmer.stopShimmer();
+                    bloodFeedShimmer.setVisibility(View.GONE);
                 }
                 if (nonEmergencyInfosSaved.isEmpty()) {
                     PostsActivity.updateData(nonEmergencyInfosSaved);
@@ -302,7 +300,6 @@ public class BloodFeedFragment extends Fragment {
                     //nonEmergencyInfos.add(nonEmergencyInfo);
                     nonEmergencyInfosBackup.add(nonEmergencyInfo);
                     Log.e("Executed","Again"+nonEmergencyInfo.getKey());
-                    sortByLocation();
                     //AppData.setNonEmergencyInfos(nonEmergencyInfos);
                 }
 
@@ -315,12 +312,7 @@ public class BloodFeedFragment extends Fragment {
             if (swipeLayout.isRefreshing()) {
                 swipeLayout.setRefreshing(false);
             }
-            if (nonEmergencyInfosBackup.isEmpty()) {
-                nothingFoundBloodFeed.setVisibility(View.VISIBLE);
-                noPostTextView.setVisibility(View.VISIBLE);
-                bloodFeedShimmer.stopShimmer();
-                bloodFeedShimmer.setVisibility(View.GONE);
-            }
+
 //            if (nonEmergencyInfosOwnPost.isEmpty()) {
 //                YourPostFragment.refreshRecycler(new ArrayList<NonEmergencyInfo>(), ctx);
 //            }
@@ -394,6 +386,8 @@ public class BloodFeedFragment extends Fragment {
                                     double distance = distanceApiData.getRows().get(0).getElements().get(0).getDistance().getValue() / 1000;
                                     Log.e("Distance", distance + " Index " + index);
                                     nonEmergencyInfosBackup.get(index).setDistamceFromUser(distance);
+//                                    requestAdapter=new RequestAdapter(ctx,nonEmergencyInfosBackup);
+//                                    bloodRequestRecycler.setAdapter(requestAdapter);
                                 }catch (Exception e)
                                 {
                                     e.printStackTrace();
@@ -404,25 +398,30 @@ public class BloodFeedFragment extends Fragment {
                                 if(index==nonEmergencyInfosBackup.size()-1)
                                 {
 
-
-
                                     Log.e("Last Index",index+"");
-                                    if (filter.contains("location"))
-                                    {
-                                        nonEmergencyInfos.clear();
-                                        nonEmergencyInfos.addAll(nonEmergencyInfosBackup);
-                                        requestAdapter=new RequestAdapter(ctx,nonEmergencyInfos);
-                                        bloodRequestRecycler.setAdapter(requestAdapter);
-                                        Collections.sort(nonEmergencyInfos, new Comparator<NonEmergencyInfo>() {
+                                    try {
+                                        bloodFeedShimmer.stopShimmer();
+                                        bloodFeedShimmer.setVisibility(View.GONE);
+                                        // requestAdapter.notifyDataSetChanged();
+                                        Collections.sort(nonEmergencyInfosBackup, new Comparator<NonEmergencyInfo>() {
                                             @Override
                                             public int compare(NonEmergencyInfo nonEmergencyInfo, NonEmergencyInfo t1) {
                                                 return Double.compare(nonEmergencyInfo.getDistamceFromUser(), t1.getDistamceFromUser());
                                             }
                                         });
-                                        filterStatus.setText("Nearby Location");
+                                        nonEmergencyInfos.clear();
+                                        nonEmergencyInfos.addAll(nonEmergencyInfosBackup);
+                                        // filterStatus.setText("Nearby Location");
+//                                        requestAdapter=new RequestAdapter(ctx,nonEmergencyInfos);
+//                                        bloodRequestRecycler.setAdapter(requestAdapter);
+                                        requestAdapter.notifyDataSetChanged();
                                     }
-                                    else if (filter.contains("Blood")) {nonEmergencyInfos.clear();
-
+                                    catch (Exception e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                    if (filter.contains("Blood")) {
+                                        nonEmergencyInfos.clear();
                                         sortByBloodGroup();
                                     } else if(filter.contains("date")) {
                                         nonEmergencyInfos.clear();

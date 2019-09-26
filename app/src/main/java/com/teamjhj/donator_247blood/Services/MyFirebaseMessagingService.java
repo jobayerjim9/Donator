@@ -56,7 +56,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             body=remoteMessage.getData().get("body");
         }
 
-        Log.d("FirebaseFuck",tag);
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         Intent intent = new Intent(this, LoadingScreenActivity.class);
         Bundle bundle = new Bundle();

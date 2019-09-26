@@ -102,14 +102,29 @@ public class BloodRequestDialog extends DialogFragment {
         callButtonLiveRequest = v.findViewById(R.id.callButtonLiveRequest);
         mapButtonLiveRequest = v.findViewById(R.id.mapButtonLiveRequest);
         messengerButtonLiveRequest = v.findViewById(R.id.messengerButtonLiveRequest);
+        DatabaseReference myPrfoile=FirebaseDatabase.getInstance().getReference("UserProfile").child(FirebaseAuth.getInstance().getUid());
+        myPrfoile.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserProfile userProfile=dataSnapshot.getValue(UserProfile.class);
+                if(userProfile!=null)
+                {
+                    AppData.setUserProfile(userProfile);
+                    setBloodGroup(userProfile);
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         DatabaseReference user = FirebaseDatabase.getInstance().getReference("UserProfile").child(key);
         user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userProfile = dataSnapshot.getValue(UserProfile.class);
                 if (userProfile != null) {
-                    setBloodGroup(userProfile);
                     String placeHolder = userProfile.getName();
                     headingBloodRequest.setText(placeHolder);
                     callButtonLiveRequest.setOnClickListener(new View.OnClickListener() {
@@ -151,8 +166,15 @@ public class BloodRequestDialog extends DialogFragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
-                    Toast.makeText(ctx, "Request Already Closed", Toast.LENGTH_LONG).show();
-                    dismiss();
+                    try {
+                        Toast.makeText(ctx, "Request Already Closed", Toast.LENGTH_LONG).show();
+                        dismiss();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                        dismiss();
+                    }
                 }
                 liveBloodRequest = dataSnapshot.getValue(LiveBloodRequest.class);
                 if (liveBloodRequest != null) {
@@ -161,7 +183,7 @@ public class BloodRequestDialog extends DialogFragment {
                         @Override
                         public void onClick(View view) {
                             String uri = String.format(Locale.ENGLISH, "geo:%f,%f", liveBloodRequest.getLat(), liveBloodRequest.getLon());
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                            Intent intent = new Intent(Intent.CATEGORY_APP_MAPS, Uri.parse(uri));
                             ctx.startActivity(intent);
                         }
                     });

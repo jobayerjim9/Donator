@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,6 +45,27 @@ public class NearbyPlaceAdapter extends RecyclerView.Adapter<NearbyPlaceAdapter.
 
         holder.nearbyPlaceName.setText(nearbyPlaceData.get(position).getName());
         holder.nearbyPlaceVincity.setText(nearbyPlaceData.get(position).getVicinity());
+        float f=nearbyPlaceData.get(position).getRating().floatValue();
+        holder.rating.setRating(f);
+        String placeHolder;
+        try {
+            if (nearbyPlaceData.get(position).getOpeningHours().getOpenNow()) {
+                placeHolder = "Open Now!";
+            } else {
+                placeHolder = "Closed!";
+            }
+        }
+        catch (Exception e)
+        {
+            placeHolder="No Data Found";
+        }
+        try {
+            holder.price.setText(placeHolder);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 //        Log.d("NearbyImage",nearbyPlaceData.get(position).getPhotos().get(0).getPhotoReference() );
         GoogleMap thisMap = holder.mapCurrent;
         if(thisMap != null) {
@@ -65,11 +87,15 @@ public class NearbyPlaceAdapter extends RecyclerView.Adapter<NearbyPlaceAdapter.
     {
         MapView nearbyMapView;
         GoogleMap mapCurrent;
-        TextView nearbyPlaceName,nearbyPlaceVincity;
+        TextView nearbyPlaceName,nearbyPlaceVincity,price;
+        RatingBar rating;
+
         public NearbyPlaceViewHolder(@NonNull View itemView) {
             super(itemView);
             nearbyPlaceName=itemView.findViewById(R.id.nearbyPlaceName);
             nearbyPlaceVincity=itemView.findViewById(R.id.nearbyPlaceVincity);
+            price=itemView.findViewById(R.id.price);
+            rating=itemView.findViewById(R.id.rating);
             nearbyMapView =(MapView) itemView.findViewById(R.id.nearbyMapView);
             if (nearbyMapView != null) {
                 // Initialise the MapView

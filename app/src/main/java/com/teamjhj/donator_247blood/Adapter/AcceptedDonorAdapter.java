@@ -81,11 +81,31 @@ public class AcceptedDonorAdapter extends RecyclerView.Adapter<AcceptedDonorAdap
         try {
             String placeHolder;
             holder.nameOfDonnerAccepted.setText(donnersData.get(position).getName());
-            placeHolder = "Within " + radius.get(position) + " km";
-            holder.distanceTextAccepted.setText(placeHolder);
-            holder.distanceBarAccepted.getProgressDrawable().setColorFilter(
-                    Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
-            holder.distanceBarAccepted.setProgress(radius.get(position));
+            DatabaseReference liveRequest = FirebaseDatabase.getInstance().getReference("LiveRequest").child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())).child("DonorsFound").child(donnersData.get(position).getUid()).child("radius");
+            liveRequest.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    try {
+                        int radius = dataSnapshot.getValue(Integer.class);
+                        String placeHolder = "Within " + radius + " km";
+                        holder.distanceTextAccepted.setText(placeHolder);
+                        holder.distanceBarAccepted.getProgressDrawable().setColorFilter(
+                                Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+                        holder.distanceBarAccepted.setProgress(radius);
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
             holder.messageDonorAccepted.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

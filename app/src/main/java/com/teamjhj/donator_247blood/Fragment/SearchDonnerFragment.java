@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -114,9 +116,10 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
     private static CardView searchDonorMessage, searchCardView;
     private final int AUTOCOMPLETE_REQUEST_CODE = 1;
     String add;
+    private boolean pausedWhileSearching;
     //AutocompleteSupportFragment place_autocomplete_fragment;
     //private TextView locationLabel;
-    private Button pickupLocation, searchDonner;
+    private Button pickupLocation, searchDonner,youtubeHowTo;
    // private LocationListener locationListener;
    // private LocationManager locationManager;
     private List<Address> addresses;
@@ -170,6 +173,7 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
         radioGroup = view.findViewById(R.id.radioGroup);
         reasonInput = view.findViewById(R.id.reasonInput);
         bagsSearchDonor = view.findViewById(R.id.bagsSearchDonor);
+        youtubeHowTo = view.findViewById(R.id.youtubeHowTo);
         expMenu = view.findViewById(R.id.expMenu);
 
         searchDonorLabel = view.findViewById(R.id.searchDonorLabel);
@@ -180,7 +184,24 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
         searchDonorMessage = view.findViewById(R.id.searchDonorMessage);
         searchDonnerFrameLayout = view.findViewById(R.id.searchDonnerFrameLayout);
         searchingAnimationFragment = view.findViewById(R.id.searchingAnimationFragment);
+        youtubeHowTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=n0IgM4FUcVM"));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setPackage("com.google.android.youtube");
+                    startActivity(intent);
+                }
+                catch (ActivityNotFoundException e)
+                {
+                    Uri uri = Uri.parse("https://www.youtube.com/watch?v=n0IgM4FUcVM"); // missing 'http://' will cause crashed
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
 
+            }
+        });
         pickupLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -232,8 +253,6 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
             }
         });
         Spinner selectBloodGroup = view.findViewById(R.id.selectBloodGroup);
-        YouTubePlayerView youTubePlayerView = view.findViewById(R.id.youtube_player_view);
-        getLifecycle().addObserver(youTubePlayerView);
 //        new Boom(selectBloodGroup);
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.bloodGroups, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -259,7 +278,8 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
                 searchDonorLabel.setVisibility(View.VISIBLE);
                 searchDonorMessage.setVisibility(View.GONE);
                 headingYoutube.setVisibility(View.GONE);
-                youTubePlayerView.setVisibility(View.GONE);
+                youtubeHowTo.setVisibility(View.GONE);
+
                 //blood_transfusion.setVisibility(View.GONE);
 
                 if (i == R.id.nonEmmargencyButton) {
@@ -373,6 +393,7 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
             Toast.makeText(getContext(), " Enter Why You Need Blood!\n Example:- Dengue", Toast.LENGTH_SHORT).show();
         }
         else {
+
             if (currentButtonName.equals("Emergency")) {
                 Objects.requireNonNull(getActivity()).getWindow().setSoftInputMode(
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -413,6 +434,7 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
                             WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
                 }
             }
+
         }
     }
     private void uploadPost() {
@@ -429,6 +451,12 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
                     BloodFeedFragment.getDataFromDatabase();
                     SuccessfulDialog successfulDialog=new SuccessfulDialog("Successfully Posted!");
                     successfulDialog.show(getChildFragmentManager(),"SuccessfulDialog");
+                    datePickerSearchDonor.setText("Pick A Date");
+                    bagsSearchDonor.setText("");
+                    reasonInput.getEditText().setText("");
+                    day=0;
+                    month=0;
+                    year=0;
                 }
 
             }
@@ -444,74 +472,94 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
     }
     private void searchNearbyDonner() {
         //radius=0;
-        final DatabaseReference availableDonner = FirebaseDatabase.getInstance().getReference("AvailableDonner");
-        GeoFire geoFire = new GeoFire(availableDonner);
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(pickedLocation.latitude, pickedLocation.longitude), radius);
-        geoQuery.removeAllListeners();
-        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-            @Override
-            public void onKeyEntered(final String key, GeoLocation location) {
-                DatabaseReference select = availableDonner.child(key).child("BloodGroup");
-                select.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        try {
+        try {
+            final DatabaseReference availableDonner = FirebaseDatabase.getInstance().getReference("AvailableDonner");
+            GeoFire geoFire = new GeoFire(availableDonner);
+            GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(pickedLocation.latitude, pickedLocation.longitude), radius);
+            geoQuery.removeAllListeners();
+            geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                @Override
+                public void onKeyEntered(final String key, GeoLocation location) {
+                    DatabaseReference select = availableDonner.child(key).child("BloodGroup");
+                    select.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            try {
 
-                            String blood = dataSnapshot.getValue(String.class);
-                            if (blood.contains(selectedBloodGroup)) {
-                                Log.d("UserRadius",radius+" "+key);
-                                if (!donners.toString().contains(key)) {
-                                    if (!Objects.equals(FirebaseAuth.getInstance().getUid(), key)) {
-                                        donners.add(key);
-                                        radiusList.add(radius);
+                                String blood = dataSnapshot.getValue(String.class);
+                                if (blood.contains(selectedBloodGroup)) {
+                                    Log.d("UserRadius", radius + " " + key);
+                                    if (!donners.toString().contains(key)) {
+                                        if (!Objects.equals(FirebaseAuth.getInstance().getUid(), key)) {
+                                            donners.add(key);
+                                            radiusList.add(radius);
+                                        }
                                     }
+
                                 }
-
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
-            }
+                        }
+                    });
+                }
 
-            @Override
-            public void onKeyExited(String key) {
-
-            }
-
-            @Override
-            public void onKeyMoved(String key, GeoLocation location) {
-
-            }
-
-            @Override
-            public void onGeoQueryReady() {
-                if (donners.size() <= 40 && radius <= 25) {
-                    radius++;
-                    searchNearbyDonner();
-
-                } else {
-                    AppData.setDonners(donners);
-                    AppData.setRadiusList(radiusList);
-                    getDonnerList();
+                @Override
+                public void onKeyExited(String key) {
 
                 }
 
-            }
+                @Override
+                public void onKeyMoved(String key, GeoLocation location) {
 
-            @Override
-            public void onGeoQueryError(DatabaseError error) {
-                Toast.makeText(getContext(), "Your Internet Is Too Slow!", Toast.LENGTH_LONG).show();
-            }
-        });
+                }
 
+                @Override
+                public void onGeoQueryReady() {
+                    if (donners.size() <= 40 && radius <= 25) {
+                        radius++;
+                        searchNearbyDonner();
 
+                    } else {
+                        AppData.setDonners(donners);
+                        AppData.setRadiusList(radiusList);
+                        try {
+                            getDonnerList();
+                        }
+                        catch (Exception e)
+                        {
+                            pausedWhileSearching=true;
+                        }
+
+                    }
+
+                }
+
+                @Override
+                public void onGeoQueryError(DatabaseError error) {
+                    Toast.makeText(getContext(), "Your Internet Is Too Slow!", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(pausedWhileSearching)
+        {
+            getDonnerList();
+        }
     }
 
     private void getDonnerList() {
@@ -529,7 +577,7 @@ public class SearchDonnerFragment extends Fragment implements DatePickerDialog.O
         donnerListFragment.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         donnerListFragment.add(R.id.searchDonnerFrameLayout, new DonnerListFragment(reasonInput.getEditText().getText().toString(), selectedBloodGroup, pickedLocation));
         donnerListFragment.commit();
-
+        pausedWhileSearching=false;
 
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 public class NearbyOpeningData {
     @SerializedName("open_now")
     @Expose
-    private Boolean openNow;
+    private boolean openNow;
     @SerializedName("weekday_text")
     @Expose
     private List<Object> weekdayText = new ArrayList<Object>();
@@ -19,7 +19,7 @@ public class NearbyOpeningData {
      * @return
      * The openNow
      */
-    public Boolean getOpenNow() {
+    public boolean getOpenNow() {
         return openNow;
     }
 
@@ -28,7 +28,7 @@ public class NearbyOpeningData {
      * @param openNow
      * The open_now
      */
-    public void setOpenNow(Boolean openNow) {
+    public void setOpenNow(boolean openNow) {
         this.openNow = openNow;
     }
 
