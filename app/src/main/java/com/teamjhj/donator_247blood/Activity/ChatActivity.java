@@ -202,7 +202,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void sendNotification(UserProfile userProfile) {
         try {
-            // DatabaseReference notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid());
+            //   notification = FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getUid());
 
 
             ApiInterface apiInterface = NotificationAPI.getClient().create(ApiInterface.class);

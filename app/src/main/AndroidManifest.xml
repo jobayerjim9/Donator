@@ -85,10 +85,10 @@
             android:resource="@array/preloaded_fonts" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="166f784f660c505c1937eada567cb7f1de0412d7" />
+            android:value="@string/fabric_key" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAjt-nsOSRT-l8UYDNAe7zzr7molPPCb4Y" />
+            android:value="@string/map_key" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_application_id" />
